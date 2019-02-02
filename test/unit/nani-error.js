@@ -53,8 +53,8 @@ describe('NaniError', function() {
 			expect(TestError._getFullName()).to.equal('full name.TestError');
 		});
 
-		it('returns own name only if superclass has no fullName', function() {
-			expect(NaniError._getFullName()).to.equal('NaniError');
+		it('returns \'Error.NaniError\' for NaniError itelf', function() {
+			expect(NaniError._getFullName()).to.equal('Error.NaniError');
 		});
 	});
 });
