@@ -4,6 +4,10 @@ import NaniError from '../../lib/nani-error';
 class TestError extends NaniError {}
 
 describe('NaniError', function() {
+	it('extends Error', function() {
+		expect(new TestError()).to.be.an.instanceof(Error);
+	});
+
 	describe('@name', function() {
 		it('returns contructor name', function() {
 			expect(new NaniError().name).to.equal('NaniError');
@@ -17,6 +21,18 @@ describe('NaniError', function() {
 			sinon.stub(TestError, 'fullName').get(() => fullName);
 
 			expect(new TestError().fullName).to.equal(fullName);
+		});
+	});
+
+	describe('@@defaultMessage', function() {
+		it('returns a generic error message', function() {
+			expect(TestError.defaultMessage).to.equal('An error has occurred');
+		});
+
+		it('is read only', function() {
+			expect(() => {
+				TestError.defaultMessage = 'whatever';
+			}).to.throw('Cannot set property defaultMessage');
 		});
 	});
 
