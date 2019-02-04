@@ -1,11 +1,96 @@
 import NaniError from '../../lib/nani-error';
+import extsprintf from 'extsprintf';
 
 // We need a simple subclass to test derived class behavior.
 class TestError extends NaniError {}
 
 describe('NaniError', function() {
-	it('extends Error', function() {
-		expect(new TestError()).to.be.an.instanceof(Error);
+	describe('constructor', function() {
+		const formattedMessage = 'formatted message';
+		const defaultMessage = 'default message';
+		const cause = new Error('Omg bad error!');
+		const info = { foo: 'bar' };
+
+		beforeEach(function() {
+			sinon.stub(extsprintf, 'sprintf').returns(formattedMessage);
+			sinon.stub(TestError, 'defaultMessage').get(() => defaultMessage);
+		});
+
+		it('supports full signature with options object and sprintf arguments', function() {
+			const err = new TestError({ cause, info }, 'foo', 'bar', 'baz');
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.equal(cause);
+			expect(err.info).to.equal(info);
+			expect(extsprintf.sprintf).to.be.calledOnce;
+			expect(extsprintf.sprintf).to.be.calledWith('foo', 'bar', 'baz');
+			expect(err.shortMessage).to.equal(formattedMessage);
+			expect(err.message).to.equal(
+				`${formattedMessage} : ${cause.message}`
+			);
+		});
+
+		it('does not invoke sprintf if only one sprintf argument is provided', function() {
+			const err = new TestError({ cause, info }, 'foo');
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.equal(cause);
+			expect(err.info).to.equal(info);
+			expect(extsprintf.sprintf).to.not.be.called;
+			expect(err.shortMessage).to.equal('foo');
+			expect(err.message).to.equal(`foo : ${cause.message}`);
+		});
+
+		it('uses default message if no sprintf arguments are provided', function() {
+			const err = new TestError({ cause, info });
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(extsprintf.sprintf).to.not.be.called;
+			expect(err.shortMessage).to.equal(defaultMessage);
+			expect(err.cause).to.equal(cause);
+			expect(err.info).to.equal(info);
+			expect(err.message).to.equal(
+				`${defaultMessage} : ${cause.message}`
+			);
+		});
+
+		it('defaults to null cause and info', function() {
+			const err = new TestError({}, 'foo', 'bar');
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.be.null;
+			expect(err.info).to.be.null;
+			expect(extsprintf.sprintf).to.be.calledOnce;
+			expect(extsprintf.sprintf).to.be.calledWith('foo', 'bar');
+			expect(err.shortMessage).to.equal(formattedMessage);
+			expect(err.message).to.equal(formattedMessage);
+		});
+
+		it('supports shorthand signature with cause in place of options', function() {
+			const err = new TestError(cause, 'foo', 'bar');
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.equal(cause);
+			expect(err.info).to.be.null;
+			expect(extsprintf.sprintf).to.be.calledOnce;
+			expect(extsprintf.sprintf).to.be.calledWith('foo', 'bar');
+			expect(err.shortMessage).to.equal(formattedMessage);
+			expect(err.message).to.equal(
+				`${formattedMessage} : ${cause.message}`
+			);
+		});
+
+		it('supports shorthand signature with no options', function() {
+			const err = new TestError('foo', 'bar');
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.be.null;
+			expect(err.info).to.be.null;
+			expect(extsprintf.sprintf).to.be.calledOnce;
+			expect(extsprintf.sprintf).to.be.calledWith('foo', 'bar');
+			expect(err.shortMessage).to.equal(formattedMessage);
+			expect(err.message).to.equal(formattedMessage);
+		});
 	});
 
 	describe('@name', function() {
