@@ -1,4 +1,5 @@
 import * as utils from '../../lib/utils';
+import extsprintf from 'extsprintf';
 
 describe('utils', function() {
 	describe('::getFullName', function() {
@@ -36,6 +37,36 @@ describe('utils', function() {
 			it('returns null if name is not known', function() {
 				expect(utils.getFullName({ name: 'foo' })).to.be.null;
 			});
+		});
+	});
+
+	describe('::format', function() {
+		const sprintfResult = 'sprintf result';
+
+		beforeEach(function() {
+			sinon.stub(extsprintf, 'sprintf').returns(sprintfResult);
+		});
+
+		it('returns result of sprintf with provided array as arguments', function() {
+			const result = utils.format([ 'foo', 'bar' ]);
+
+			expect(extsprintf.sprintf).to.be.calledOnce;
+			expect(extsprintf.sprintf).to.be.calledWith('foo', 'bar');
+			expect(result).to.equal(sprintfResult);
+		});
+
+		it('returns first element without calling sprintf, if array has only one element', function() {
+			const result = utils.format([ 'foo' ]);
+
+			expect(extsprintf.sprintf).to.not.be.called;
+			expect(result).to.equal('foo');
+		});
+
+		it('returns first argument without calling sprintf, if it is not an array', function() {
+			const result = utils.format('foo');
+
+			expect(extsprintf.sprintf).to.not.be.called;
+			expect(result).to.equal('foo');
 		});
 	});
 });
