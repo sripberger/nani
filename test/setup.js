@@ -10,6 +10,6 @@ global.expect = chai.expect;
 global.sinon = sinon;
 
 // Restore anything replaced by sinon after each test.
-beforeEach(() => {
+afterEach(() => {
 	sinon.restore();
 });
