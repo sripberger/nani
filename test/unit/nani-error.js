@@ -85,6 +85,16 @@ describe('NaniError', function() {
 			expect(TestError.getDefaultMessage).to.be.calledOnce;
 			expect(TestError.getDefaultMessage).to.be.calledWith(null);
 		});
+
+		it('supports skipCauseMessage option', function() {
+			options.message = 'Omg bad error!';
+			options.cause = new Error('Omg bad error!');
+			options.skipCauseMessage = true;
+
+			const err = new TestError();
+
+			expect(err.message).to.equal(options.message);
+		});
 	});
 
 	describe('@name', function() {
