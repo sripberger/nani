@@ -36,12 +36,14 @@ describe('NaniError', function() {
 			expect(err.message).to.equal(options.message);
 		});
 
-		it('uses constructor default message, if none is provided', function() {
+		it('gets message using ::getDefaultMessage, if none is provided', function() {
 			const defaultMessage = 'default message';
-			sinon.stub(TestError, 'defaultMessage').get(() => defaultMessage);
+			sinon.stub(TestError, 'getDefaultMessage').returns(defaultMessage);
 
 			const err = new TestError();
 
+			expect(TestError.getDefaultMessage).to.be.calledOnce;
+			expect(TestError.getDefaultMessage).to.be.calledOn(TestError);
 			expect(err.shortMessage).to.equal(defaultMessage);
 			expect(err.message).to.equal(defaultMessage);
 		});
@@ -63,14 +65,25 @@ describe('NaniError', function() {
 			expect(new TestError().cause).to.be.null;
 		});
 
-		it('stores info, if any', function() {
+		it('stores and provides info to ::getDefaultMessage, if any', function() {
 			options.info = { foo: 'bar' };
+			sinon.spy(TestError, 'getDefaultMessage');
 
-			expect(new TestError().info).to.equal(options.info);
+			const err = new TestError();
+
+			expect(err.info).to.equal(options.info);
+			expect(TestError.getDefaultMessage).to.be.calledOnce;
+			expect(TestError.getDefaultMessage).to.be.calledWith(options.info);
 		});
 
 		it('defaults to null info', function() {
-			expect(new TestError().info).to.be.null;
+			sinon.spy(TestError, 'getDefaultMessage');
+
+			const err = new TestError();
+
+			expect(err.info).to.be.null;
+			expect(TestError.getDefaultMessage).to.be.calledOnce;
+			expect(TestError.getDefaultMessage).to.be.calledWith(null);
 		});
 	});
 
@@ -87,18 +100,6 @@ describe('NaniError', function() {
 			sinon.stub(TestError, 'fullName').get(() => fullName);
 
 			expect(new TestError().fullName).to.equal(fullName);
-		});
-	});
-
-	describe('@@defaultMessage', function() {
-		it('returns a generic error message', function() {
-			expect(TestError.defaultMessage).to.equal('An error has occurred');
-		});
-
-		it('is read only', function() {
-			expect(() => {
-				TestError.defaultMessage = 'whatever';
-			}).to.throw('Cannot set property defaultMessage');
 		});
 	});
 
@@ -125,6 +126,14 @@ describe('NaniError', function() {
 
 			expect(TestError.fullName).to.equal(fullName);
 			expect(TestError._getFullName).to.not.be.called;
+		});
+	});
+
+	describe('::getDefaultMessage', function() {
+		it('returns a generic error message', function() {
+			expect(TestError.getDefaultMessage()).to.equal(
+				'An error has occurred'
+			);
 		});
 	});
 
