@@ -14,8 +14,8 @@ describe('NaniError', function() {
 			sinon.stub(TestError, 'defaultMessage').get(() => defaultMessage);
 		});
 
-		it('supports full signature with options object and message', function() {
-			const err = new TestError({ cause, info }, message);
+		it('supports signature with options object', function() {
+			const err = new TestError({ message, cause, info });
 
 			expect(err).to.be.an.instanceof(Error);
 			expect(err.cause).to.equal(cause);
@@ -38,18 +38,18 @@ describe('NaniError', function() {
 			);
 		});
 
-		it('defaults to null cause and info', function() {
-			const err = new TestError({}, message);
+		it('defaults to null cause', function() {
+			const err = new TestError({ message, info });
 
 			expect(err).to.be.an.instanceof(Error);
 			expect(err.cause).to.be.null;
-			expect(err.info).to.be.null;
+			expect(err.info).to.equal(info);
 			expect(err.shortMessage).to.equal(message);
 			expect(err.message).to.equal(message);
 		});
 
-		it('supports shorthand signature with cause in place of options', function() {
-			const err = new TestError(cause, message);
+		it('defaults to null info', function() {
+			const err = new TestError({ message, cause });
 
 			expect(err).to.be.an.instanceof(Error);
 			expect(err.cause).to.equal(cause);
@@ -60,7 +60,68 @@ describe('NaniError', function() {
 			);
 		});
 
-		it('supports shorthand signature with no options', function() {
+		it('supports signature with message preceding options', function() {
+			const err = new TestError(message, { cause, info });
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.equal(cause);
+			expect(err.info).to.equal(info);
+			expect(err.shortMessage).to.equal(message);
+			expect(err.message).to.equal(
+				`${message} : ${cause.message}`
+			);
+		});
+
+		it('supports signature with cause preceding options', function() {
+			const err = new TestError(cause, { message, info });
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.equal(cause);
+			expect(err.info).to.equal(info);
+			expect(err.shortMessage).to.equal(message);
+			expect(err.message).to.equal(
+				`${message} : ${cause.message}`
+			);
+		});
+
+		it('supports signature with message and cause preceding options', function() {
+			const err = new TestError(message, cause, { info });
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.equal(cause);
+			expect(err.info).to.equal(info);
+			expect(err.shortMessage).to.equal(message);
+			expect(err.message).to.equal(
+				`${message} : ${cause.message}`
+			);
+		});
+
+		it('priortizes options object over preceding arguments', function() {
+			const options = { message, cause, info };
+			const err = new TestError('foo', new Error('bar'), options);
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.equal(cause);
+			expect(err.info).to.equal(info);
+			expect(err.shortMessage).to.equal(message);
+			expect(err.message).to.equal(
+				`${message} : ${cause.message}`
+			);
+		});
+
+		it('supports signature with no options object', function() {
+			const err = new TestError(message, cause);
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.equal(cause);
+			expect(err.info).to.be.null;
+			expect(err.shortMessage).to.equal(message);
+			expect(err.message).to.equal(
+				`${message} : ${cause.message}`
+			);
+		});
+
+		it('supports signature with message only', function() {
 			const err = new TestError(message);
 
 			expect(err).to.be.an.instanceof(Error);
@@ -68,6 +129,28 @@ describe('NaniError', function() {
 			expect(err.info).to.be.null;
 			expect(err.shortMessage).to.equal(message);
 			expect(err.message).to.equal(message);
+		});
+
+		it('supports signature with cause only', function() {
+			const err = new TestError(cause);
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.equal(cause);
+			expect(err.info).to.be.null;
+			expect(err.shortMessage).to.equal(defaultMessage);
+			expect(err.message).to.equal(
+				`${defaultMessage} : ${cause.message}`
+			);
+		});
+
+		it('supports signature with no arguments', function() {
+			const err = new TestError();
+
+			expect(err).to.be.an.instanceof(Error);
+			expect(err.cause).to.be.null;
+			expect(err.info).to.be.null;
+			expect(err.shortMessage).to.equal(defaultMessage);
+			expect(err.message).to.equal(defaultMessage);
 		});
 	});
 
