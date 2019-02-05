@@ -61,6 +61,20 @@ describe('NaniError', function() {
 			);
 		});
 
+		it('supports cause message changed onto default message', function() {
+			const defaultMessage = 'default message';
+			sinon.stub(TestError, 'getDefaultMessage').returns(defaultMessage);
+			options.cause = new Error('Omg bad error!');
+
+			const err = new TestError();
+
+			expect(err.cause).to.equal(options.cause);
+			expect(err.shortMessage).to.equal(defaultMessage);
+			expect(err.message).to.equal(
+				`${defaultMessage} : ${options.cause.message}`
+			);
+		});
+
 		it('defaults to null cause', function() {
 			expect(new TestError().cause).to.be.null;
 		});
