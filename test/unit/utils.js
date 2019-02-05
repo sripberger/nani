@@ -38,4 +38,45 @@ describe('utils', function() {
 			});
 		});
 	});
+
+	describe('::normalizeOptions', function() {
+		const message = 'Omg bad error!';
+		const cause = new Error('Cause of bad error!');
+
+		it('returns copy of options object, if it is the first arg', function() {
+			const result = utils.normalizeOptions({ foo: 'bar' });
+
+			expect(result).to.deep.equal({ foo: 'bar' });
+		});
+
+		it('supports message preceding options', function() {
+			const result = utils.normalizeOptions(message, { foo: 'bar' });
+
+			expect(result).to.deep.equal({ message, foo: 'bar' });
+		});
+
+		it('supports cause preceding options', function() {
+			const result = utils.normalizeOptions(cause, { foo: 'bar' });
+
+			expect(result).to.deep.equal({ cause, foo: 'bar' });
+		});
+
+		it('supports message and cause preceding options', function() {
+			const result = utils.normalizeOptions(message, cause, {
+				foo: 'bar',
+			});
+
+			expect(result).to.deep.equal({ message, cause, foo: 'bar' });
+		});
+
+		it('prioritizes options props over preceding args', function() {
+			const result = utils.normalizeOptions('foo', new Error('bar'), {
+				message,
+				cause,
+				baz: 'qux',
+			});
+
+			expect(result).to.deep.equal({ message, cause, baz: 'qux' });
+		});
+	});
 });
