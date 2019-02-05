@@ -24,7 +24,7 @@ describe('NaniError', function() {
 			new TestError(...args);
 
 			expect(utils.normalizeOptions).to.be.calledOnce;
-			expect(utils.normalizeOptions).to.be.calledWith(...args);
+			expect(utils.normalizeOptions).to.be.calledWith(args);
 		});
 
 		it('stores message option as shortMessage and message props', function() {
