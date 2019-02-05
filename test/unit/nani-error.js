@@ -14,7 +14,7 @@ describe('NaniError', function() {
 
 		beforeEach(function() {
 			options = {};
-			sinon.stub(utils, 'normalizeOptions').returns(options);
+			sinon.stub(utils, 'normalizeArgs').returns(options);
 		});
 
 		it('normalizes arguments into options', function() {
@@ -23,8 +23,8 @@ describe('NaniError', function() {
 			// eslint-disable-next-line no-new
 			new TestError(...args);
 
-			expect(utils.normalizeOptions).to.be.calledOnce;
-			expect(utils.normalizeOptions).to.be.calledWith(args);
+			expect(utils.normalizeArgs).to.be.calledOnce;
+			expect(utils.normalizeArgs).to.be.calledWith(args);
 		});
 
 		it('stores message option as shortMessage and message props', function() {

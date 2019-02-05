@@ -39,30 +39,30 @@ describe('utils', function() {
 		});
 	});
 
-	describe('::normalizeOptions', function() {
+	describe('::normalizeArgs', function() {
 		const message = 'Omg bad error!';
 		const cause = new Error('Cause of bad error!');
 
 		it('returns copy of options object, if it is the first arg', function() {
-			const result = utils.normalizeOptions([ { foo: 'bar' } ]);
+			const result = utils.normalizeArgs([ { foo: 'bar' } ]);
 
 			expect(result).to.deep.equal({ foo: 'bar' });
 		});
 
 		it('supports message preceding options', function() {
-			const result = utils.normalizeOptions([ message, { foo: 'bar' } ]);
+			const result = utils.normalizeArgs([ message, { foo: 'bar' } ]);
 
 			expect(result).to.deep.equal({ message, foo: 'bar' });
 		});
 
 		it('supports cause preceding options', function() {
-			const result = utils.normalizeOptions([ cause, { foo: 'bar' } ]);
+			const result = utils.normalizeArgs([ cause, { foo: 'bar' } ]);
 
 			expect(result).to.deep.equal({ cause, foo: 'bar' });
 		});
 
 		it('supports message and cause preceding options', function() {
-			const result = utils.normalizeOptions([
+			const result = utils.normalizeArgs([
 				message,
 				cause,
 				{ foo: 'bar' },
@@ -72,7 +72,7 @@ describe('utils', function() {
 		});
 
 		it('prioritizes options props over preceding args', function() {
-			const result = utils.normalizeOptions([
+			const result = utils.normalizeArgs([
 				'foo',
 				new Error('bar'),
 				{ message, cause, baz: 'qux' },
@@ -82,7 +82,7 @@ describe('utils', function() {
 		});
 
 		it('returns an empty object, if no args are provided', function() {
-			const result = utils.normalizeOptions([]);
+			const result = utils.normalizeArgs([]);
 
 			expect(result).to.deep.equal({});
 		});
