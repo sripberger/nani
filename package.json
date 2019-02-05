@@ -14,7 +14,6 @@
   "main": "cjs",
   "dependencies": {
     "esm": "^3.2.0",
-    "extsprintf": "^1.4.0",
     "lodash": "^4.17.11"
   },
   "devDependencies": {

@@ -1,95 +1,73 @@
 import NaniError from '../../lib/nani-error';
-import extsprintf from 'extsprintf';
 
 // We need a simple subclass to test derived class behavior.
 class TestError extends NaniError {}
 
 describe('NaniError', function() {
 	describe('constructor', function() {
-		const formattedMessage = 'formatted message';
 		const defaultMessage = 'default message';
-		const cause = new Error('Omg bad error!');
+		const message = 'Omg bad error!';
+		const cause = new Error('Cause of bad error!');
 		const info = { foo: 'bar' };
 
 		beforeEach(function() {
-			sinon.stub(extsprintf, 'sprintf').returns(formattedMessage);
 			sinon.stub(TestError, 'defaultMessage').get(() => defaultMessage);
 		});
 
-		it('supports full signature with options object and sprintf arguments', function() {
-			const err = new TestError({ cause, info }, 'foo', 'bar', 'baz');
+		it('supports full signature with options object and message', function() {
+			const err = new TestError({ cause, info }, message);
 
 			expect(err).to.be.an.instanceof(Error);
 			expect(err.cause).to.equal(cause);
 			expect(err.info).to.equal(info);
-			expect(extsprintf.sprintf).to.be.calledOnce;
-			expect(extsprintf.sprintf).to.be.calledWith('foo', 'bar', 'baz');
-			expect(err.shortMessage).to.equal(formattedMessage);
+			expect(err.shortMessage).to.equal(message);
 			expect(err.message).to.equal(
-				`${formattedMessage} : ${cause.message}`
+				`${message} : ${cause.message}`
 			);
 		});
 
-		it('does not invoke sprintf if only one sprintf argument is provided', function() {
-			const err = new TestError({ cause, info }, 'foo');
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.equal(cause);
-			expect(err.info).to.equal(info);
-			expect(extsprintf.sprintf).to.not.be.called;
-			expect(err.shortMessage).to.equal('foo');
-			expect(err.message).to.equal(`foo : ${cause.message}`);
-		});
-
-		it('uses default message if no sprintf arguments are provided', function() {
+		it('uses default message if none is provided', function() {
 			const err = new TestError({ cause, info });
 
 			expect(err).to.be.an.instanceof(Error);
-			expect(extsprintf.sprintf).to.not.be.called;
-			expect(err.shortMessage).to.equal(defaultMessage);
 			expect(err.cause).to.equal(cause);
 			expect(err.info).to.equal(info);
+			expect(err.shortMessage).to.equal(defaultMessage);
 			expect(err.message).to.equal(
 				`${defaultMessage} : ${cause.message}`
 			);
 		});
 
 		it('defaults to null cause and info', function() {
-			const err = new TestError({}, 'foo', 'bar');
+			const err = new TestError({}, message);
 
 			expect(err).to.be.an.instanceof(Error);
 			expect(err.cause).to.be.null;
 			expect(err.info).to.be.null;
-			expect(extsprintf.sprintf).to.be.calledOnce;
-			expect(extsprintf.sprintf).to.be.calledWith('foo', 'bar');
-			expect(err.shortMessage).to.equal(formattedMessage);
-			expect(err.message).to.equal(formattedMessage);
+			expect(err.shortMessage).to.equal(message);
+			expect(err.message).to.equal(message);
 		});
 
 		it('supports shorthand signature with cause in place of options', function() {
-			const err = new TestError(cause, 'foo', 'bar');
+			const err = new TestError(cause, message);
 
 			expect(err).to.be.an.instanceof(Error);
 			expect(err.cause).to.equal(cause);
 			expect(err.info).to.be.null;
-			expect(extsprintf.sprintf).to.be.calledOnce;
-			expect(extsprintf.sprintf).to.be.calledWith('foo', 'bar');
-			expect(err.shortMessage).to.equal(formattedMessage);
+			expect(err.shortMessage).to.equal(message);
 			expect(err.message).to.equal(
-				`${formattedMessage} : ${cause.message}`
+				`${message} : ${cause.message}`
 			);
 		});
 
 		it('supports shorthand signature with no options', function() {
-			const err = new TestError('foo', 'bar');
+			const err = new TestError(message);
 
 			expect(err).to.be.an.instanceof(Error);
 			expect(err.cause).to.be.null;
 			expect(err.info).to.be.null;
-			expect(extsprintf.sprintf).to.be.calledOnce;
-			expect(extsprintf.sprintf).to.be.calledWith('foo', 'bar');
-			expect(err.shortMessage).to.equal(formattedMessage);
-			expect(err.message).to.equal(formattedMessage);
+			expect(err.shortMessage).to.equal(message);
+			expect(err.message).to.equal(message);
 		});
 	});
 
