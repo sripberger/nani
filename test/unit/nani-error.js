@@ -1,156 +1,76 @@
+import * as utils from '../../lib/utils';
 import NaniError from '../../lib/nani-error';
 
 // We need a simple subclass to test derived class behavior.
 class TestError extends NaniError {}
 
 describe('NaniError', function() {
+	it('extends Error', function() {
+		expect(new TestError()).to.be.an.instanceof(Error);
+	});
+
 	describe('constructor', function() {
-		const defaultMessage = 'default message';
-		const message = 'Omg bad error!';
-		const cause = new Error('Cause of bad error!');
-		const info = { foo: 'bar' };
+		let options;
 
 		beforeEach(function() {
+			options = {};
+			sinon.stub(utils, 'normalizeOptions').returns(options);
+		});
+
+		it('normalizes arguments into options', function() {
+			const args = [ 'foo', 'bar', 'baz' ];
+
+			// eslint-disable-next-line no-new
+			new TestError(...args);
+
+			expect(utils.normalizeOptions).to.be.calledOnce;
+			expect(utils.normalizeOptions).to.be.calledWith(...args);
+		});
+
+		it('stores message option as shortMessage and message props', function() {
+			options.message = 'Omg bad error!';
+
+			const err = new TestError();
+
+			expect(err.shortMessage).to.equal(options.message);
+			expect(err.message).to.equal(options.message);
+		});
+
+		it('uses constructor default message, if none is provided', function() {
+			const defaultMessage = 'default message';
 			sinon.stub(TestError, 'defaultMessage').get(() => defaultMessage);
-		});
 
-		it('supports signature with options object', function() {
-			const err = new TestError({ message, cause, info });
+			const err = new TestError();
 
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.equal(cause);
-			expect(err.info).to.equal(info);
-			expect(err.shortMessage).to.equal(message);
-			expect(err.message).to.equal(
-				`${message} : ${cause.message}`
-			);
-		});
-
-		it('uses default message if none is provided', function() {
-			const err = new TestError({ cause, info });
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.equal(cause);
-			expect(err.info).to.equal(info);
 			expect(err.shortMessage).to.equal(defaultMessage);
+			expect(err.message).to.equal(defaultMessage);
+		});
+
+		it('stores cause and chains its message onto original message, if any', function() {
+			options.message = 'Omg bad error!';
+			options.cause = new Error('Omg bad error!');
+
+			const err = new TestError();
+
+			expect(err.cause).to.equal(options.cause);
+			expect(err.shortMessage).to.equal(options.message);
 			expect(err.message).to.equal(
-				`${defaultMessage} : ${cause.message}`
+				`${options.message} : ${options.cause.message}`
 			);
 		});
 
 		it('defaults to null cause', function() {
-			const err = new TestError({ message, info });
+			expect(new TestError().cause).to.be.null;
+		});
 
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.be.null;
-			expect(err.info).to.equal(info);
-			expect(err.shortMessage).to.equal(message);
-			expect(err.message).to.equal(message);
+		it('stores info, if any', function() {
+			options.info = { foo: 'bar' };
+
+			expect(new TestError().info).to.equal(options.info);
 		});
 
 		it('defaults to null info', function() {
-			const err = new TestError({ message, cause });
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.equal(cause);
-			expect(err.info).to.be.null;
-			expect(err.shortMessage).to.equal(message);
-			expect(err.message).to.equal(
-				`${message} : ${cause.message}`
-			);
-		});
-
-		it('supports signature with message preceding options', function() {
-			const err = new TestError(message, { cause, info });
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.equal(cause);
-			expect(err.info).to.equal(info);
-			expect(err.shortMessage).to.equal(message);
-			expect(err.message).to.equal(
-				`${message} : ${cause.message}`
-			);
-		});
-
-		it('supports signature with cause preceding options', function() {
-			const err = new TestError(cause, { message, info });
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.equal(cause);
-			expect(err.info).to.equal(info);
-			expect(err.shortMessage).to.equal(message);
-			expect(err.message).to.equal(
-				`${message} : ${cause.message}`
-			);
-		});
-
-		it('supports signature with message and cause preceding options', function() {
-			const err = new TestError(message, cause, { info });
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.equal(cause);
-			expect(err.info).to.equal(info);
-			expect(err.shortMessage).to.equal(message);
-			expect(err.message).to.equal(
-				`${message} : ${cause.message}`
-			);
-		});
-
-		it('priortizes options object over preceding arguments', function() {
-			const options = { message, cause, info };
-			const err = new TestError('foo', new Error('bar'), options);
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.equal(cause);
-			expect(err.info).to.equal(info);
-			expect(err.shortMessage).to.equal(message);
-			expect(err.message).to.equal(
-				`${message} : ${cause.message}`
-			);
-		});
-
-		it('supports signature with no options object', function() {
-			const err = new TestError(message, cause);
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.equal(cause);
-			expect(err.info).to.be.null;
-			expect(err.shortMessage).to.equal(message);
-			expect(err.message).to.equal(
-				`${message} : ${cause.message}`
-			);
-		});
-
-		it('supports signature with message only', function() {
-			const err = new TestError(message);
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.be.null;
-			expect(err.info).to.be.null;
-			expect(err.shortMessage).to.equal(message);
-			expect(err.message).to.equal(message);
-		});
-
-		it('supports signature with cause only', function() {
-			const err = new TestError(cause);
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.equal(cause);
-			expect(err.info).to.be.null;
-			expect(err.shortMessage).to.equal(defaultMessage);
-			expect(err.message).to.equal(
-				`${defaultMessage} : ${cause.message}`
-			);
-		});
-
-		it('supports signature with no arguments', function() {
-			const err = new TestError();
-
-			expect(err).to.be.an.instanceof(Error);
-			expect(err.cause).to.be.null;
-			expect(err.info).to.be.null;
-			expect(err.shortMessage).to.equal(defaultMessage);
-			expect(err.message).to.equal(defaultMessage);
+			expect(new TestError().info).to.be.null;
 		});
 	});
 

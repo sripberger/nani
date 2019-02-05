@@ -78,5 +78,11 @@ describe('utils', function() {
 
 			expect(result).to.deep.equal({ message, cause, baz: 'qux' });
 		});
+
+		it('returns an empty object, if no args are provided', function() {
+			const result = utils.normalizeOptions();
+
+			expect(result).to.deep.equal({});
+		});
 	});
 });
