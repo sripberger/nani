@@ -131,21 +131,23 @@ describe('NaniError', function() {
 		const fullName = 'full name';
 
 		beforeEach(function() {
+			NaniError._fullName = 'superclass full name';
 			sinon.stub(TestError, '_getFullName').returns(fullName);
 		});
 
 		afterEach(function() {
+			delete NaniError._fullName;
 			delete TestError._fullName;
 		});
 
-		it('sets to _fullName and returns result of _getFullNane', function() {
+		it('sets to own _fullName and returns result of _getFullNane', function() {
 			expect(TestError.fullName).to.equal(fullName);
 			expect(TestError._fullName).to.equal(fullName);
 			expect(TestError._getFullName).to.be.calledOnce;
 			expect(TestError._getFullName).to.be.calledOn(TestError);
 		});
 
-		it('returns _fullName without calling _getFullName, if it is already set', function() {
+		it('returns own _fullName without calling _getFullName, if it is already set', function() {
 			TestError._fullName = fullName;
 
 			expect(TestError.fullName).to.equal(fullName);
