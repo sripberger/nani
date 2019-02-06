@@ -1,1 +1,3 @@
 extends: '@sripberger/eslint-config/test'
+rules:
+    max-classes-per-file: off

@@ -1,5 +1,3 @@
-/* eslint max-classes-per-file: off */
-
 const { NaniError, is } = require('../../cjs');
 
 // Some simple subclasses for testing purposes...

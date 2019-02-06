@@ -1,5 +1,3 @@
-/* eslint max-classes-per-file: "off" */
-
 const { NaniError } = require('../../cjs');
 
 describe('NaniError', function() {
@@ -104,7 +102,7 @@ describe('NaniError', function() {
 		expect(err.info).to.deep.equal({ foo: 'bar' });
 	});
 
-	it('provides error info to the default message method', function() {
+	it('supports default messages based on error info', function() {
 		// Create another subclass that overrides ::getDefaultMessage.
 		// This time, use the `info` argument of that method.
 		class FooError extends NaniError {
