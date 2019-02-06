@@ -19,12 +19,10 @@ describe('utils', function() {
 
 			const standardErrorNames = [
 				'Error',
-				'AssertionError',
 				'RangeError',
 				'ReferenceError',
 				'SyntaxError',
 				'TypeError',
-				'SystemError',
 				'EvalError',
 				'URIError',
 			];
