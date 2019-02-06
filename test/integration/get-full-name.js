@@ -1,5 +1,6 @@
+/* eslint max-classes-per-file: off */
+
 const { NaniError, getFullName } = require('../../cjs');
-const { AssertionError } = require('assert');
 
 // Some simple subclasses for testing purposes...
 class FooError extends NaniError {}
