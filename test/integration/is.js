@@ -64,9 +64,9 @@ describe('is', function() {
 		expect(is(BazError, err)).to.be.true;
 	});
 
-	it('can check a plain Error', function() {
-		const err = new Error();
-
+	it('supports checking of standard JS errors', function() {
+		// Check a plain Error
+		let err = new Error();
 		expect(is(Error, err)).to.be.true;
 		expect(is(EvalError, err)).to.be.false;
 		expect(is(RangeError, err)).to.be.false;
@@ -78,11 +78,9 @@ describe('is', function() {
 		expect(is(FooError, err)).to.be.false;
 		expect(is(BarError, err)).to.be.false;
 		expect(is(BazError, err)).to.be.false;
-	});
 
-	it('can check an EvalError', function() {
-		const err = new EvalError();
-
+		// Check an EvalError
+		err = new EvalError();
 		expect(is(Error, err)).to.be.true;
 		expect(is(EvalError, err)).to.be.true;
 		expect(is(RangeError, err)).to.be.false;
@@ -94,11 +92,9 @@ describe('is', function() {
 		expect(is(FooError, err)).to.be.false;
 		expect(is(BarError, err)).to.be.false;
 		expect(is(BazError, err)).to.be.false;
-	});
 
-	it('can check a RangeError', function() {
-		const err = new RangeError();
-
+		// Check a RangeError
+		err = new RangeError();
 		expect(is(Error, err)).to.be.true;
 		expect(is(EvalError, err)).to.be.false;
 		expect(is(RangeError, err)).to.be.true;
@@ -110,11 +106,9 @@ describe('is', function() {
 		expect(is(FooError, err)).to.be.false;
 		expect(is(BarError, err)).to.be.false;
 		expect(is(BazError, err)).to.be.false;
-	});
 
-	it('can check a ReferenceError', function() {
-		const err = new ReferenceError();
-
+		// Check a ReferenceError
+		err = new ReferenceError();
 		expect(is(Error, err)).to.be.true;
 		expect(is(EvalError, err)).to.be.false;
 		expect(is(RangeError, err)).to.be.false;
@@ -126,11 +120,9 @@ describe('is', function() {
 		expect(is(FooError, err)).to.be.false;
 		expect(is(BarError, err)).to.be.false;
 		expect(is(BazError, err)).to.be.false;
-	});
 
-	it('can check a SyntaxError', function() {
-		const err = new SyntaxError();
-
+		// Check a SyntaxError
+		err = new SyntaxError();
 		expect(is(Error, err)).to.be.true;
 		expect(is(EvalError, err)).to.be.false;
 		expect(is(RangeError, err)).to.be.false;
@@ -142,11 +134,9 @@ describe('is', function() {
 		expect(is(FooError, err)).to.be.false;
 		expect(is(BarError, err)).to.be.false;
 		expect(is(BazError, err)).to.be.false;
-	});
 
-	it('can check a TypeError', function() {
-		const err = new TypeError();
-
+		// Check a TypeError
+		err = new TypeError();
 		expect(is(Error, err)).to.be.true;
 		expect(is(EvalError, err)).to.be.false;
 		expect(is(RangeError, err)).to.be.false;
@@ -158,11 +148,9 @@ describe('is', function() {
 		expect(is(FooError, err)).to.be.false;
 		expect(is(BarError, err)).to.be.false;
 		expect(is(BazError, err)).to.be.false;
-	});
 
-	it('can check a URIError', function() {
-		const err = new URIError();
-
+		// Check a URIError
+		err = new URIError();
 		expect(is(Error, err)).to.be.true;
 		expect(is(EvalError, err)).to.be.false;
 		expect(is(RangeError, err)).to.be.false;
