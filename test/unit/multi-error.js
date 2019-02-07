@@ -4,6 +4,7 @@ import NaniError from '../../lib/nani-error';
 describe('MultiError', function() {
 	it('extends NaniError', function() {
 		expect(new MultiError()).to.be.an.instanceof(NaniError);
+		expect(MultiError.fullName).to.equal('Error.NaniError.MultiError');
 	});
 
 	it('stores provided error array', function() {
