@@ -1,19 +1,19 @@
 const { NaniError } = require('../../cjs');
 
 describe('NaniError', function() {
-	const message = 'Omg bad error!';
+	const shortMessage = 'Omg bad error!';
 	const cause = new Error('Cause of bad error');
 
 	it('supports error messages, using default if omitted', function() {
 		// Create with options object.
-		let err = new NaniError({ message });
+		let err = new NaniError({ shortMessage });
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal(message);
+		expect(err.message).to.equal(shortMessage);
 
 		// Try again with shorthand signature.
-		err = new NaniError(message);
+		err = new NaniError(shortMessage);
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal(message);
+		expect(err.message).to.equal(shortMessage);
 
 		// Check the default error message
 		err = new NaniError();
@@ -36,17 +36,17 @@ describe('NaniError', function() {
 
 	it('supports cause message chaining', function() {
 		// Create with options object.
-		let err = new NaniError({ message, cause });
+		let err = new NaniError({ shortMessage, cause });
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal(`${message} : ${cause.message}`);
-		expect(err.shortMessage).to.equal(message);
+		expect(err.message).to.equal(`${shortMessage} : ${cause.message}`);
+		expect(err.shortMessage).to.equal(shortMessage);
 		expect(err.cause).to.equal(cause);
 
 		// Try again with shorthand signature.
-		err = new NaniError(message, cause);
+		err = new NaniError(shortMessage, cause);
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal(`${message} : ${cause.message}`);
-		expect(err.shortMessage).to.equal(message);
+		expect(err.message).to.equal(`${shortMessage} : ${cause.message}`);
+		expect(err.shortMessage).to.equal(shortMessage);
 		expect(err.cause).to.equal(cause);
 
 		// Try again with cause-only signature.
@@ -61,17 +61,21 @@ describe('NaniError', function() {
 
 	it('supports disabling of cause message chaining', function() {
 		// Create with options object.
-		let err = new NaniError({ message, cause, skipCauseMessage: true });
+		let err = new NaniError({
+			shortMessage,
+			cause,
+			skipCauseMessage: true,
+		});
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal(message);
-		expect(err.shortMessage).to.equal(message);
+		expect(err.message).to.equal(shortMessage);
+		expect(err.shortMessage).to.equal(shortMessage);
 		expect(err.cause).to.equal(cause);
 
 		// Try again with shorthand signature.
-		err = new NaniError(message, cause, { skipCauseMessage: true });
+		err = new NaniError(shortMessage, cause, { skipCauseMessage: true });
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal(message);
-		expect(err.shortMessage).to.equal(message);
+		expect(err.message).to.equal(shortMessage);
+		expect(err.shortMessage).to.equal(shortMessage);
 		expect(err.cause).to.equal(cause);
 
 		// Try again with default message.
@@ -84,15 +88,15 @@ describe('NaniError', function() {
 
 	it('supports error info', function() {
 		// Create with options object.
-		let err = new NaniError({ message, info: { foo: 'bar' } });
+		let err = new NaniError({ shortMessage, info: { foo: 'bar' } });
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal(message);
+		expect(err.message).to.equal(shortMessage);
 		expect(err.info).to.deep.equal({ foo: 'bar' });
 
 		// Try again with shorthand signature.
-		err = new NaniError(message, { info: { foo: 'bar' } });
+		err = new NaniError(shortMessage, { info: { foo: 'bar' } });
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal(message);
+		expect(err.message).to.equal(shortMessage);
 		expect(err.info).to.deep.equal({ foo: 'bar' });
 
 		// Try again with default message..

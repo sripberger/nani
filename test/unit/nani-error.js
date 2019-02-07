@@ -28,12 +28,12 @@ describe('NaniError', function() {
 		});
 
 		it('stores message option as shortMessage and message props', function() {
-			options.message = 'Omg bad error!';
+			options.shortMessage = 'Omg bad error!';
 
 			const err = new TestError();
 
-			expect(err.shortMessage).to.equal(options.message);
-			expect(err.message).to.equal(options.message);
+			expect(err.shortMessage).to.equal(options.shortMessage);
+			expect(err.message).to.equal(options.shortMessage);
 		});
 
 		it('gets message using ::getDefaultMessage, if none is provided', function() {
@@ -49,15 +49,15 @@ describe('NaniError', function() {
 		});
 
 		it('stores cause and chains its message onto original message, if any', function() {
-			options.message = 'Omg bad error!';
+			options.shortMessage = 'Omg bad error!';
 			options.cause = new Error('Omg bad error!');
 
 			const err = new TestError();
 
 			expect(err.cause).to.equal(options.cause);
-			expect(err.shortMessage).to.equal(options.message);
+			expect(err.shortMessage).to.equal(options.shortMessage);
 			expect(err.message).to.equal(
-				`${options.message} : ${options.cause.message}`
+				`${options.shortMessage} : ${options.cause.message}`
 			);
 		});
 
@@ -101,13 +101,13 @@ describe('NaniError', function() {
 		});
 
 		it('supports skipCauseMessage option', function() {
-			options.message = 'Omg bad error!';
+			options.shortMessage = 'Omg bad error!';
 			options.cause = new Error('Omg bad error!');
 			options.skipCauseMessage = true;
 
 			const err = new TestError();
 
-			expect(err.message).to.equal(options.message);
+			expect(err.message).to.equal(options.shortMessage);
 		});
 	});
 
