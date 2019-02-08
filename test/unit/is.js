@@ -1,7 +1,7 @@
 import * as getFullNameModule from '../../lib/get-full-name';
 import { is } from '../../lib/is';
 
-describe('::is', function() {
+describe('is', function() {
 	let sup, err;
 
 	beforeEach(function() {

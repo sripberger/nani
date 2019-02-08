@@ -1,6 +1,6 @@
 import { getFullName } from '../../lib/get-full-name';
 
-describe('::getFullName', function() {
+describe('getFullName', function() {
 	it('returns fullName property of provided object, if any', function() {
 		const fullName = 'fullName';
 

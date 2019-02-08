@@ -1,6 +1,6 @@
 import { iterate } from '../../lib/iterate';
 
-describe('::iterate', function() {
+describe('iterate', function() {
 	it('iterates through all causes of an error', function() {
 		const fooErr = new Error('foo');
 		const barErr = fooErr.cause = new Error('bar');

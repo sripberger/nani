@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { getFullStack } from '../../lib/get-full-stack';
 
-describe('::getFullStack', function() {
+describe('getFullStack', function() {
 	it('returns stack of each cause in sequence', function() {
 		const fooErr = new Error('foo');
 		const barErr = fooErr.cause = new Error('bar');
