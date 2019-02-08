@@ -1,5 +1,5 @@
-import MultiError from '../../lib/multi-error';
-import NaniError from '../../lib/nani-error';
+import { MultiError } from '../../lib/multi-error';
+import { NaniError } from '../../lib/nani-error';
 
 describe('MultiError', function() {
 	it('extends NaniError', function() {

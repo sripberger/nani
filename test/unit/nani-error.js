@@ -1,5 +1,5 @@
 import * as utils from '../../lib/utils';
-import NaniError from '../../lib/nani-error';
+import { NaniError } from '../../lib/nani-error';
 
 // We need a simple subclass to test derived class behavior.
 class TestError extends NaniError {}
