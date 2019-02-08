@@ -1,5 +1,5 @@
 import * as utils from '../../lib/utils';
-import is from '../../lib/is';
+import { is } from '../../lib/is';
 
 describe('::is', function() {
 	let sup, err;
