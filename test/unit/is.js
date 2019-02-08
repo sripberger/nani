@@ -1,4 +1,4 @@
-import * as utils from '../../lib/utils';
+import * as getFullNameModule from '../../lib/get-full-name';
 import { is } from '../../lib/is';
 
 describe('::is', function() {
@@ -10,17 +10,17 @@ describe('::is', function() {
 	});
 
 	it('gets the full name of both sup and err', function() {
-		sinon.stub(utils, 'getFullName').returns('full name');
+		sinon.stub(getFullNameModule, 'getFullName').returns('full name');
 
 		is(sup, err);
 
-		expect(utils.getFullName).to.be.calledTwice;
-		expect(utils.getFullName).to.be.calledWith(sup);
-		expect(utils.getFullName).to.be.calledWith(err);
+		expect(getFullNameModule.getFullName).to.be.calledTwice;
+		expect(getFullNameModule.getFullName).to.be.calledWith(sup);
+		expect(getFullNameModule.getFullName).to.be.calledWith(err);
 	});
 
 	it('returns true if err fullName starts with sup fullName', function() {
-		sinon.stub(utils, 'getFullName')
+		sinon.stub(getFullNameModule, 'getFullName')
 			.withArgs(sup).returns('Error.SuperError')
 			.withArgs(err).returns('Error.SuperError.SubError');
 
@@ -28,7 +28,7 @@ describe('::is', function() {
 	});
 
 	it('returns false if err fullName does not start with sup fullName', function() {
-		sinon.stub(utils, 'getFullName')
+		sinon.stub(getFullNameModule, 'getFullName')
 			.withArgs(sup).returns('Error.SuperError')
 			.withArgs(err).returns('Error.SubError');
 
@@ -36,7 +36,7 @@ describe('::is', function() {
 	});
 
 	it('returns false if err fullName is null', function() {
-		sinon.stub(utils, 'getFullName')
+		sinon.stub(getFullNameModule, 'getFullName')
 			.withArgs(sup).returns('Error.SuperError')
 			.withArgs(err).returns(null);
 
@@ -44,7 +44,7 @@ describe('::is', function() {
 	});
 
 	it('returns false if err fullName is null', function() {
-		sinon.stub(utils, 'getFullName')
+		sinon.stub(getFullNameModule, 'getFullName')
 			.withArgs(sup).returns(null)
 			.withArgs(err).returns('Error.SuperError.SubError');
 
