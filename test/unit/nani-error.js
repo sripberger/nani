@@ -1,4 +1,3 @@
-import * as utils from '../../lib/utils';
 import { NaniError } from '../../lib/nani-error';
 
 // We need a simple subclass to test derived class behavior.
@@ -14,7 +13,7 @@ describe('NaniError', function() {
 
 		beforeEach(function() {
 			options = {};
-			sinon.stub(utils, 'normalizeArgs').returns(options);
+			sinon.stub(TestError, '_normalizeArgs').returns(options);
 		});
 
 		it('normalizes arguments into options', function() {
@@ -23,8 +22,8 @@ describe('NaniError', function() {
 			// eslint-disable-next-line no-new
 			new TestError(...args);
 
-			expect(utils.normalizeArgs).to.be.calledOnce;
-			expect(utils.normalizeArgs).to.be.calledWith(args);
+			expect(TestError._normalizeArgs).to.be.calledOnce;
+			expect(TestError._normalizeArgs).to.be.calledWith(args);
 		});
 
 		it('stores message option as shortMessage and message props', function() {
@@ -160,6 +159,58 @@ describe('NaniError', function() {
 			expect(TestError.getDefaultMessage()).to.equal(
 				'An error has occurred'
 			);
+		});
+	});
+
+	describe('::_normalizeArgs', function() {
+		const shortMessage = 'Omg bad error!';
+		const cause = new Error('Cause of bad error!');
+
+		it('returns copy of options object, if it is the first arg', function() {
+			const result = NaniError._normalizeArgs([ { foo: 'bar' } ]);
+
+			expect(result).to.deep.equal({ foo: 'bar' });
+		});
+
+		it('supports shortMessage preceding options', function() {
+			const result = NaniError._normalizeArgs([
+				shortMessage,
+				{ foo: 'bar' },
+			]);
+
+			expect(result).to.deep.equal({ shortMessage, foo: 'bar' });
+		});
+
+		it('supports cause preceding options', function() {
+			const result = NaniError._normalizeArgs([ cause, { foo: 'bar' } ]);
+
+			expect(result).to.deep.equal({ cause, foo: 'bar' });
+		});
+
+		it('supports shortMessage and cause preceding options', function() {
+			const result = NaniError._normalizeArgs([
+				shortMessage,
+				cause,
+				{ foo: 'bar' },
+			]);
+
+			expect(result).to.deep.equal({ shortMessage, cause, foo: 'bar' });
+		});
+
+		it('prioritizes options props over preceding args', function() {
+			const result = NaniError._normalizeArgs([
+				'foo',
+				new Error('bar'),
+				{ shortMessage, cause, baz: 'qux' },
+			]);
+
+			expect(result).to.deep.equal({ shortMessage, cause, baz: 'qux' });
+		});
+
+		it('returns an empty object, if no args are provided', function() {
+			const result = NaniError._normalizeArgs([]);
+
+			expect(result).to.deep.equal({});
 		});
 	});
 
