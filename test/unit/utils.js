@@ -1,5 +1,4 @@
 import * as utils from '../../lib/utils';
-import _ from 'lodash';
 
 describe('utils', function() {
 	describe('::normalizeArgs', function() {
@@ -51,19 +50,6 @@ describe('utils', function() {
 			const result = utils.normalizeArgs([]);
 
 			expect(result).to.deep.equal({});
-		});
-	});
-
-	describe('::getFullStack', function() {
-		it('returns stack of each cause in sequence', function() {
-			const fooErr = new Error('foo');
-			const barErr = fooErr.cause = new Error('bar');
-			const bazErr = barErr.cause = new Error('baz');
-			const errors = [ fooErr, barErr, bazErr ];
-
-			expect(utils.getFullStack(fooErr)).to.deep.equal(
-				_.map(errors, 'stack').join('\nCaused by: ')
-			);
 		});
 	});
 
