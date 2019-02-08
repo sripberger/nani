@@ -1,12 +1,12 @@
-import { iterate } from '../../lib/iterate';
+import { iterateCauses } from '../../lib/iterate-causes';
 
-describe('iterate', function() {
+describe('iterateCauses', function() {
 	it('iterates through all causes of an error', function() {
 		const fooErr = new Error('foo');
 		const barErr = fooErr.cause = new Error('bar');
 		const bazErr = barErr.cause = new Error('baz');
 
-		const result = Array.from(iterate(fooErr));
+		const result = [ ...iterateCauses(fooErr) ];
 
 		expect(result).to.deep.equal([ fooErr, barErr, bazErr ]);
 	});
@@ -17,7 +17,7 @@ describe('iterate', function() {
 		const bazErr = new Error('baz');
 		fooErr.errors = [ barErr, bazErr ];
 
-		const result = Array.from(iterate(fooErr));
+		const result = [ ...iterateCauses(fooErr) ];
 
 		expect(result).to.deep.equal([ fooErr, barErr, bazErr ]);
 	});
@@ -28,7 +28,7 @@ describe('iterate', function() {
 		const bazErr = barErr.cause = Error('baz');
 		fooErr.errors = [ barErr ];
 
-		const result = Array.from(iterate(fooErr));
+		const result = [ ...iterateCauses(fooErr) ];
 
 		expect(result).to.deep.equal([ fooErr, barErr, bazErr ]);
 	});

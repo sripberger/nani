@@ -1,4 +1,4 @@
-import * as iterateModule from '../../lib/iterate';
+import * as iterateCausesModule from '../../lib/iterate-causes';
 import { findCause } from '../../lib/find-cause';
 
 describe('findCause', function() {
@@ -11,7 +11,7 @@ describe('findCause', function() {
 		bazErr = new Error('baz');
 		predicate = sinon.stub().named('predicate').returns(false);
 
-		sinon.stub(iterateModule, 'iterate').returns({
+		sinon.stub(iterateCausesModule, 'iterateCauses').returns({
 			*[Symbol.iterator]() {
 				yield fooErr;
 				yield barErr;
@@ -23,8 +23,8 @@ describe('findCause', function() {
 	it('iterates over causes of err', function() {
 		findCause(err, predicate);
 
-		expect(iterateModule.iterate).to.be.calledOnce;
-		expect(iterateModule.iterate).to.be.calledWith(err);
+		expect(iterateCausesModule.iterateCauses).to.be.calledOnce;
+		expect(iterateCausesModule.iterateCauses).to.be.calledWith(err);
 	});
 
 	it('invokes predicate with each cause', function() {
