@@ -2,9 +2,9 @@ import * as iterateCausesModule from '../../lib/iterate-causes';
 import {
 	filterCausesByPredicate,
 	findCauseByPredicate,
-} from '../../lib/internal';
+} from '../../lib/find-cause-internal';
 
-describe('internal functions', function() {
+describe('Internal cause-finding functions', function() {
 	let err, fooErr, barErr, bazErr, predicate;
 
 	beforeEach(function() {

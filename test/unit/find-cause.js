@@ -1,4 +1,4 @@
-import * as internal from '../../lib/internal';
+import * as findCauseInternalModule from '../../lib/find-cause-internal';
 import * as normalizePredicateModule from '../../lib/normalize-predicate';
 import { findCause } from '../../lib/find-cause';
 
@@ -13,7 +13,7 @@ describe('findCause', function() {
 			'normalizePredicate'
 		).returns(normalized);
 		const findCauseByPredicate = sinon.stub(
-			internal,
+			findCauseInternalModule,
 			'findCauseByPredicate'
 		).returns(cause);
 
