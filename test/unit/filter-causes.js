@@ -1,4 +1,5 @@
 import * as internal from '../../lib/internal';
+import * as normalizePredicateModule from '../../lib/normalize-predicate';
 import { filterCauses } from '../../lib/filter-causes';
 
 describe('filterCauses', function() {
@@ -7,18 +8,21 @@ describe('filterCauses', function() {
 		const causes = [ new Error('foo'), new Error('bar') ];
 		const predicate = () => {};
 		const normalized = () => {};
-		sinon.stub(internal, 'normalizePredicate').returns(normalized);
-		sinon.stub(internal, 'filterCausesByPredicate').returns(causes);
+		const normalizePredicate = sinon.stub(
+			normalizePredicateModule,
+			'normalizePredicate'
+		).returns(normalized);
+		const filterCausesByPredicate = sinon.stub(
+			internal,
+			'filterCausesByPredicate'
+		).returns(causes);
 
 		const result = filterCauses(err, predicate);
 
-		expect(internal.normalizePredicate).to.be.calledOnce;
-		expect(internal.normalizePredicate).to.be.calledWith(predicate);
-		expect(internal.filterCausesByPredicate).to.be.calledOnce;
-		expect(internal.filterCausesByPredicate).to.be.calledWith(
-			err,
-			normalized
-		);
+		expect(normalizePredicate).to.be.calledOnce;
+		expect(normalizePredicate).to.be.calledWith(predicate);
+		expect(filterCausesByPredicate).to.be.calledOnce;
+		expect(filterCausesByPredicate).to.be.calledWith(err, normalized);
 		expect(result).to.equal(causes);
 	});
 });
