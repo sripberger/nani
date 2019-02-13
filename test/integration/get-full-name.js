@@ -16,7 +16,7 @@ describe('getFullName', function() {
 		expect(getFullName(TypeError)).to.equal('Error.TypeError');
 		expect(getFullName(URIError)).to.equal('Error.URIError');
 
-		// Nani errors.
+		// nani errors.
 		expect(getFullName(NaniError)).to.equal('Error.NaniError');
 		expect(getFullName(FooError)).to.equal('Error.NaniError.FooError');
 		expect(getFullName(BarError)).to.equal('Error.NaniError.BarError');
@@ -37,7 +37,7 @@ describe('getFullName', function() {
 		expect(getFullName(new TypeError())).to.equal('Error.TypeError');
 		expect(getFullName(new URIError())).to.equal('Error.URIError');
 
-		// Nani error instances
+		// nani error instances
 		expect(getFullName(new NaniError())).to.equal('Error.NaniError');
 		expect(getFullName(new FooError())).to.equal(
 			'Error.NaniError.FooError'
