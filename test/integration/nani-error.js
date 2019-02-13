@@ -111,8 +111,7 @@ describe('NaniError', function() {
 		// This time, use the `info` argument of that method.
 		class FooError extends NaniError {
 			static getDefaultMessage(info) {
-				const foo = info && info.foo;
-				return `Value of foo: ${foo}`;
+				return `Value of foo: ${info.foo}`;
 			}
 		}
 
@@ -131,7 +130,7 @@ describe('NaniError', function() {
 
 		// Try with no info.
 		err = new FooError();
-		expect(err.message).to.equal('Value of foo: null');
+		expect(err.message).to.equal('Value of foo: undefined');
 	});
 
 	it('supports name and fullName properties in subclasses', function() {

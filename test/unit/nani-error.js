@@ -60,7 +60,7 @@ describe('NaniError', function() {
 			);
 		});
 
-		it('supports cause message changed onto default message', function() {
+		it('supports cause message chained onto default message', function() {
 			const defaultMessage = 'default message';
 			sinon.stub(TestError, 'getDefaultMessage').returns(defaultMessage);
 			options.cause = new Error('Omg bad error!');
@@ -78,7 +78,7 @@ describe('NaniError', function() {
 			expect(new TestError().cause).to.be.null;
 		});
 
-		it('stores and provides info to ::getDefaultMessage, if any', function() {
+		it('stores provided info', function() {
 			options.info = { foo: 'bar' };
 			sinon.spy(TestError, 'getDefaultMessage');
 
@@ -90,13 +90,28 @@ describe('NaniError', function() {
 		});
 
 		it('defaults to null info', function() {
-			sinon.spy(TestError, 'getDefaultMessage');
-
 			const err = new TestError();
 
 			expect(err.info).to.be.null;
+		});
+
+		it('provides info to ::getDefaultMessage', function() {
+			options.info = { foo: 'bar' };
+			sinon.spy(TestError, 'getDefaultMessage');
+
+			new TestError(); // eslint-disable-line no-new
+
 			expect(TestError.getDefaultMessage).to.be.calledOnce;
-			expect(TestError.getDefaultMessage).to.be.calledWith(null);
+			expect(TestError.getDefaultMessage).to.be.calledWith(options.info);
+		});
+
+		it('provides empty object to ::getDefaultMessage, if no info', function() {
+			sinon.spy(TestError, 'getDefaultMessage');
+
+			new TestError(); // eslint-disable-line no-new
+
+			expect(TestError.getDefaultMessage).to.be.calledOnce;
+			expect(TestError.getDefaultMessage).to.be.calledWith({});
 		});
 
 		it('supports skipCauseMessage option', function() {
