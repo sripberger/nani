@@ -1,8 +1,8 @@
-import * as findCauseInternalModule from '../../lib/find-cause-internal';
+import * as findInternalModule from '../../lib/find-cause-internal';
 import * as normalizePredicateModule from '../../lib/normalize-predicate';
-import { filterCauses, findCause } from '../../lib/find-cause';
+import { filter, find } from '../../lib/find-cause';
 
-describe('External cause-finding functions', function() {
+describe('External find utils', function() {
 	const err = new Error('err');
 	const predicate = () => {};
 	const normalized = () => {};
@@ -15,38 +15,38 @@ describe('External cause-finding functions', function() {
 		).returns(normalized);
 	});
 
-	describe('findCause', function() {
+	describe('find', function() {
 		it('finds cause in error by normalized predicate', function() {
 			const cause = new Error('err cause');
-			const findCauseByPredicate = sinon.stub(
-				findCauseInternalModule,
-				'findCauseByPredicate'
+			const findByPredicate = sinon.stub(
+				findInternalModule,
+				'findByPredicate'
 			).returns(cause);
 
-			const result = findCause(err, predicate);
+			const result = find(err, predicate);
 
 			expect(normalizePredicate).to.be.calledOnce;
 			expect(normalizePredicate).to.be.calledWith(predicate);
-			expect(findCauseByPredicate).to.be.calledOnce;
-			expect(findCauseByPredicate).to.be.calledWith(err, normalized);
+			expect(findByPredicate).to.be.calledOnce;
+			expect(findByPredicate).to.be.calledWith(err, normalized);
 			expect(result).to.equal(cause);
 		});
 	});
 
-	describe('filterCauses', function() {
+	describe('filter', function() {
 		it('filters causes of error by normalized predicate', function() {
 			const causes = [ new Error('foo'), new Error('bar') ];
-			const filterCausesByPredicate = sinon.stub(
-				findCauseInternalModule,
-				'filterCausesByPredicate'
+			const filterByPredicate = sinon.stub(
+				findInternalModule,
+				'filterByPredicate'
 			).returns(causes);
 
-			const result = filterCauses(err, predicate);
+			const result = filter(err, predicate);
 
 			expect(normalizePredicate).to.be.calledOnce;
 			expect(normalizePredicate).to.be.calledWith(predicate);
-			expect(filterCausesByPredicate).to.be.calledOnce;
-			expect(filterCausesByPredicate).to.be.calledWith(err, normalized);
+			expect(filterByPredicate).to.be.calledOnce;
+			expect(filterByPredicate).to.be.calledWith(err, normalized);
 			expect(result).to.equal(causes);
 		});
 	});

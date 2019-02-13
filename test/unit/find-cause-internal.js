@@ -1,10 +1,10 @@
-import * as iterateCausesModule from '../../lib/iterate-causes';
+import * as iterateModule from '../../lib/iterate-causes';
 import {
-	filterCausesByPredicate,
-	findCauseByPredicate,
+	filterByPredicate,
+	findByPredicate,
 } from '../../lib/find-cause-internal';
 
-describe('Internal cause-finding functions', function() {
+describe('Internal find utils', function() {
 	let err, fooErr, barErr, bazErr, predicate;
 
 	beforeEach(function() {
@@ -14,7 +14,7 @@ describe('Internal cause-finding functions', function() {
 		bazErr = new Error('baz');
 		predicate = sinon.stub().named('predicate').returns(false);
 
-		sinon.stub(iterateCausesModule, 'iterateCauses').returns({
+		sinon.stub(iterateModule, 'iterate').returns({
 			*[Symbol.iterator]() {
 				yield fooErr;
 				yield barErr;
@@ -23,16 +23,16 @@ describe('Internal cause-finding functions', function() {
 		});
 	});
 
-	describe('findCauseByPredicate', function() {
+	describe('findByPredicate', function() {
 		it('iterates over causes of err', function() {
-			findCauseByPredicate(err, predicate);
+			findByPredicate(err, predicate);
 
-			expect(iterateCausesModule.iterateCauses).to.be.calledOnce;
-			expect(iterateCausesModule.iterateCauses).to.be.calledWith(err);
+			expect(iterateModule.iterate).to.be.calledOnce;
+			expect(iterateModule.iterate).to.be.calledWith(err);
 		});
 
 		it('invokes predicate with each cause', function() {
-			findCauseByPredicate(err, predicate);
+			findByPredicate(err, predicate);
 
 			expect(predicate).to.be.calledThrice;
 			expect(predicate).to.be.calledWith(fooErr);
@@ -43,7 +43,7 @@ describe('Internal cause-finding functions', function() {
 		it('returns first cause where predicate returns true', function() {
 			predicate.withArgs(barErr).returns(true);
 
-			const result = findCauseByPredicate(err, predicate);
+			const result = findByPredicate(err, predicate);
 
 			expect(predicate).to.be.calledTwice;
 			expect(predicate).to.be.calledWith(fooErr);
@@ -52,22 +52,22 @@ describe('Internal cause-finding functions', function() {
 		});
 
 		it('returns null if predicate never returns true', function() {
-			const result = findCauseByPredicate(err, predicate);
+			const result = findByPredicate(err, predicate);
 
 			expect(result).to.be.null;
 		});
 	});
 
-	describe('filterCausesByPredicate', function() {
+	describe('filterByPredicate', function() {
 		it('iterates over causes of err', function() {
-			filterCausesByPredicate(err, predicate);
+			filterByPredicate(err, predicate);
 
-			expect(iterateCausesModule.iterateCauses).to.be.calledOnce;
-			expect(iterateCausesModule.iterateCauses).to.be.calledWith(err);
+			expect(iterateModule.iterate).to.be.calledOnce;
+			expect(iterateModule.iterate).to.be.calledWith(err);
 		});
 
 		it('invokes predicate with each cause', function() {
-			filterCausesByPredicate(err, predicate);
+			filterByPredicate(err, predicate);
 
 			expect(predicate).to.be.calledThrice;
 			expect(predicate).to.be.calledWith(fooErr);
@@ -80,13 +80,13 @@ describe('Internal cause-finding functions', function() {
 				.withArgs(fooErr).returns(true)
 				.withArgs(bazErr).returns(true);
 
-			const result = filterCausesByPredicate(err, predicate);
+			const result = filterByPredicate(err, predicate);
 
 			expect(result).to.deep.equal([ fooErr, bazErr ]);
 		});
 
 		it('returns an empty array if predicate never returns true', function() {
-			const result = filterCausesByPredicate(err, predicate);
+			const result = filterByPredicate(err, predicate);
 
 			expect(result).to.deep.equal([]);
 		});
