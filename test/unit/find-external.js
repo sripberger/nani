@@ -1,6 +1,6 @@
-import * as findInternalModule from '../../lib/find-cause-internal';
+import * as findInternal from '../../lib/find-internal';
 import * as normalizePredicateModule from '../../lib/normalize-predicate';
-import { filter, find } from '../../lib/find-cause';
+import { filter, find } from '../../lib/find-external';
 
 describe('External find utils', function() {
 	const err = new Error('err');
@@ -19,7 +19,7 @@ describe('External find utils', function() {
 		it('finds cause in error by normalized predicate', function() {
 			const cause = new Error('err cause');
 			const findByPredicate = sinon.stub(
-				findInternalModule,
+				findInternal,
 				'findByPredicate'
 			).returns(cause);
 
@@ -37,7 +37,7 @@ describe('External find utils', function() {
 		it('filters causes of error by normalized predicate', function() {
 			const causes = [ new Error('foo'), new Error('bar') ];
 			const filterByPredicate = sinon.stub(
-				findInternalModule,
+				findInternal,
 				'filterByPredicate'
 			).returns(causes);
 

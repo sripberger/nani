@@ -1,8 +1,5 @@
-import * as iterateModule from '../../lib/iterate-causes';
-import {
-	filterByPredicate,
-	findByPredicate,
-} from '../../lib/find-cause-internal';
+import * as iterateModule from '../../lib/iterate';
+import { filterByPredicate, findByPredicate } from '../../lib/find-internal';
 
 describe('Internal find utils', function() {
 	let err, fooErr, barErr, bazErr, predicate;

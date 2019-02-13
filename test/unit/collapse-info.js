@@ -1,4 +1,4 @@
-import * as iterateModule from '../../lib/iterate-causes';
+import * as iterateModule from '../../lib/iterate';
 import { collapseInfo } from '../../lib/collapse-info';
 
 describe('collapseInfo', function() {

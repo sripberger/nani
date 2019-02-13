@@ -1,4 +1,4 @@
-import { iterate } from '../../lib/iterate-causes';
+import { iterate } from '../../lib/iterate';
 
 describe('iterate', function() {
 	it('iterates through all causes of an error', function() {
