@@ -10,7 +10,7 @@
     "unit": "mocha -r esm test/setup.js test/unit",
     "integration": "mocha -r esm test/setup.js test/integration",
     "test": "npm run lint && npm run unit && npm run integration",
-    "docs": "documentation build ./lib/index.js -f html -o docs"
+    "docs": "documentation build ./lib/index.js -c docs.yaml -f html -o docs"
   },
   "main": "cjs",
   "dependencies": {
