@@ -1,5 +1,4 @@
 import * as findInternal from '../../lib/find-internal';
-import * as normalizePredicateModule from '../../lib/normalize-predicate';
 import { filter, find } from '../../lib/find-external';
 
 describe('External find utils', function() {
@@ -10,7 +9,7 @@ describe('External find utils', function() {
 
 	beforeEach(function() {
 		normalizePredicate = sinon.stub(
-			normalizePredicateModule,
+			findInternal,
 			'normalizePredicate'
 		).returns(normalized);
 	});
