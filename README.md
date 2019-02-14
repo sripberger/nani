@@ -48,7 +48,7 @@ on the created error.
 
 ## Hiding Cause Messages
 Occasionally, you will want an error's message to simply match its shortMessage,
-without appending the cause's message. To do so, set the `skipCauseMessage`
+without appending the cause's message. To do so, set the `hideCauseMessage`
 option to `true`. This will cause the `NaniError` to behave somewhat like a
 `WError`:
 
@@ -61,7 +61,7 @@ try {
 	throw new NaniError({
 		shortMessage: 'Parsing failed',
 		cause: err,
-		skipCauseMessage: true
+		hideCauseMessage: true
 	});
 }
 
@@ -210,7 +210,7 @@ throw new NaniError('Omg bad error!', new Error('Cause of the error'));
 // shortMessage, cause, and additional options.
 throw new NaniError('Omg bad error!', new Error('Cause of the error'), {
 	// Additional options can be included here...
-	skipCauseMessage: true,
+	hideCauseMessage: true,
 	info: { foo: 'bar' }
 });
 

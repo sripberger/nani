@@ -114,10 +114,10 @@ describe('NaniError', function() {
 			expect(TestError.getDefaultMessage).to.be.calledWith({});
 		});
 
-		it('supports skipCauseMessage option', function() {
+		it('supports hideCauseMessage option', function() {
 			options.shortMessage = 'Omg bad error!';
 			options.cause = new Error('Omg bad error!');
-			options.skipCauseMessage = true;
+			options.hideCauseMessage = true;
 
 			const err = new TestError();
 

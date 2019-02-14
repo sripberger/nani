@@ -64,7 +64,7 @@ describe('NaniError', function() {
 		let err = new NaniError({
 			shortMessage,
 			cause,
-			skipCauseMessage: true,
+			hideCauseMessage: true,
 		});
 		expect(err).to.be.an.instanceof(Error);
 		expect(err.message).to.equal(shortMessage);
@@ -72,14 +72,14 @@ describe('NaniError', function() {
 		expect(err.cause).to.equal(cause);
 
 		// Try again with shorthand signature.
-		err = new NaniError(shortMessage, cause, { skipCauseMessage: true });
+		err = new NaniError(shortMessage, cause, { hideCauseMessage: true });
 		expect(err).to.be.an.instanceof(Error);
 		expect(err.message).to.equal(shortMessage);
 		expect(err.shortMessage).to.equal(shortMessage);
 		expect(err.cause).to.equal(cause);
 
 		// Try again with default message.
-		err = new NaniError(cause, { skipCauseMessage: true });
+		err = new NaniError(cause, { hideCauseMessage: true });
 		expect(err).to.be.an.instanceof(Error);
 		expect(err.message).to.equal('An error has occurred');
 		expect(err.shortMessage).to.equal('An error has occurred');
