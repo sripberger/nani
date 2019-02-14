@@ -86,6 +86,63 @@ the error messages your users see with internal stuff they don't care about,
 while still preserving the underlying cause chain for your own debugging
 purposes.
 
+## Viewing the Full Stack
+Node's default uncaught exception handler simply prints out the `stack` property
+of the exception to `stderr` and exits. This, of course, doesn't tell you
+anything about the stack traces in the cause chain. To view this, `nani`
+provides the `getFullStack` function:
+
+```js
+const { NaniError, getFullStack } = require('nani');
+
+// Setting our own uncaught exception handler.
+process.on('uncaughtException', (err) => {
+	// Print full stack to sterr and exit.
+	console.error(getFullStack(naniErr));
+	process.exit(1);
+});
+
+try {
+	JSON.parse('invalid JSON');
+} catch (err) {
+	throw new NaniError({
+		shortMessage: 'Parsing failed',
+		cause: err
+	});
+}
+
+/*
+Running the above code produces something like the following:
+
+NaniError: Parsing failed : Unexpected token i in JSON at position 0
+    at Object.<anonymous> (/home/sripberger/projects/personal/nani/omg.js:13:8)
+    at Module._compile (module.js:653:30)
+    at Object.Module._extensions..js (module.js:664:10)
+    at Module.load (module.js:566:32)
+    at tryModuleLoad (module.js:506:12)
+    at Function.Module._load (module.js:498:3)
+    at Function.Module.runMain (module.js:694:10)
+    at startup (bootstrap_node.js:204:16)
+    at bootstrap_node.js:625:3
+Caused by: SyntaxError: Unexpected token i in JSON at position 0
+    at JSON.parse (<anonymous>)
+    at Object.<anonymous> (/home/sripberger/projects/personal/nani/omg.js:11:7)
+    at Module._compile (module.js:653:30)
+    at Object.Module._extensions..js (module.js:664:10)
+    at Module.load (module.js:566:32)
+    at tryModuleLoad (module.js:506:12)
+    at Function.Module._load (module.js:498:3)
+    at Function.Module.runMain (module.js:694:10)
+    at startup (bootstrap_node.js:204:16)
+    at bootstrap_node.js:625:3
+*/
+```
+
+`getFullStack` works even if the provided error is not an instance of
+`NaniError`, so you can safely use it even if you might be dealing with a plain
+old JS Error. If the error has no `cause` property, it will simply print out the
+stack as normal.
+
 ## Error Info
 Like `VError`, `NaniError` supports arbitrary data in the form of the `info`
 object, which can be used to provide further detail about what happened. This
@@ -325,6 +382,281 @@ function itself. It is also reflected in `collapseInfo`, which processes each
 error in the chain in the same order.
 
 
-## The Dilemma of Checking Standard JS Errors
+## The Dilemma: Identifying Standard JS Errors
+Though it is generally favored by most JS developers, the practice of
+[duck typing](https://en.wikipedia.org/wiki/Duck_typing) tends to fall flat
+when it comes to error handling. `Error` instances are all fairly similar to
+each other and don't really have any behavior-- i.e. methods-- to use as your
+'does it walk' or 'does it quack' tests.
+
+To identify what kind of error you're looking at, you need some other mechanism.
+One way is to look at the properties of the error itself. An `Error` instance
+has only two standard properties-- `message` and `name`.
+
+`message` doesn't work because error messages are meant to be human-readable and
+are frequently subject to change. Identifying errors based on their message can
+thus be messy and quite unreliable.
+
+`name` potentially works, and is the preferred method of many developers. Every
+kind of error can have a unique `name` which is machine-readable unlikely to
+change. Unfortunately, this approach can be rather limiting compared to
+traditional type systems, as it does not support hierarchies.
+
+For example, if you wanted a set of possible password validation errors--
+one that indicates that the password is too short, one that indicates that
+the password doesn't have at least one uppercase character, and another
+that indicates the password doesn't have at least one number, you might
+construct and throw them like so:
+
+```js
+const err = new Error('Too short');
+err.name = 'TooShortError';
+throw err;
+```
+```js
+const err = new Error('Needs at least one uppercase letter');
+err.name = 'NoUppercaseError';
+throw err;
+```
+```js
+const err = new Error('Needs at least one number');
+errr.name = 'NoNumberError';
+throw err;
+```
+
+Now you can easily tell these errors apart in consuming code by checking their
+names:
+
+```js
+try {
+	validatePassword(password);
+} catch (err) {
+	if (error.name === 'TooShortError') {
+		// Handle TooShortError.
+	} else if (error.name === 'NoUppercaseError') {
+		// Handle NoUppercaseError
+	} else if (error.name === 'NoNumberError') {
+		// Handle NoNumberError
+	} else {
+		// Rethrow an unknown error.
+		throw err;
+	}
+}
+```
+
+Now, what if you decide you want to specify some more general code, to handle
+any kind of password validation error without necessarily caring about which
+specific *kind* of password validation error it is?
+
+Without changing the error names, all we really can do is check for each
+possible name, which as you can imagine gets out of hand rather quickly as you
+add more kinds of errors:
+
+```js
+try {
+	validatePassword(password);
+} catch (err) {
+	if (
+		error.name === 'TooShortError' ||
+		error.name === 'NoUppercaseError' ||
+		error.name === 'NoNumberError'
+	) {
+		// Handle any kind of password validation error.
+	} else {
+		// Rethrow an unknown error.
+		throw err;
+	}
+}
+```
+
+This approach is also a huge pain for anybody consuming your code. You might
+add a new kind of password validation error, and they'll potentially have to
+update all of their handling code to check for it.
+
+Another possible approach is to start prefixing our error names in some way,
+and check for the prefix instead of checking the entire name:
+
+```js
+const err = new Error('Too short');
+err.name = 'PasswordTooShortError';
+throw err;
+```
+```js
+const err = new Error('Needs at least one uppercase letter');
+err.name = 'PasswordNoUppercaseError';
+throw err;
+```
+```js
+const err = new Error('Needs at least one number');
+errr.name = 'PasswordNoNumberError';
+throw err;
+```
+
+
+```js
+try {
+	validatePassword(password);
+} catch (err) {
+	if (err.name.startsWith('Password')) {
+		// Handle any kind of password validation error.
+	} else {
+		// Rethrow an unknown error.
+		throw err;
+	}
+}
+```
+
+This last approach isn't terrible, but figuring out the proper prefix can be
+difficult and prone to mistakes as there's no standard to follow. Collisions
+with prefixes and names from elsewhere are likely, and again... if you change
+the names of any of your errors, all of the handling code has to change.
+
+While we've discussed `message` and `name`, there are also plenty of
+non-standard properties out there that you'll find for accomplishing something
+like this. Node itself tends to use `code`, which is a machine-readable string
+that is unlikely to change. Others might have numeric `code` or `errno`
+properties. Aside from their separation from the standard `name` property that
+effects the stack trace of the error, these are generally subject to the same
+limitations that `name` is subject to. There's no standard, and there is no way
+of easily supporting error type hierarchies. Numeric identifiers in particular
+can be a pain, because they force you to look them up in documentation instead
+of just knowing what they are by reading them.
+
+Long story short, identifying errors in JS kind of sucks. :\
+
+### What About `typeof` and `instanceof`?
+Those who are unfamiliar with the quirks Node development and JS as a language
+may be tempted to look into JS's standard
+[typeof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof)
+and
+[instanceof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof)
+operators to accomplish something similar to the static-type-based error
+handling of languages like Java and C#.
+
+The problem you'll run into *immediately* with `typeof` is that it generally
+tells you next to nothing about non-primitives (which includes Error instances):
+
+```js
+console.log(typeof 42);
+// number
+
+console.log(typeof 'asdf');
+// string
+
+console.log(typeof true);
+// boolean
+
+// Ok, so far so good, now let's try some error instances.
+
+console.log(typeof new Error('omg'));
+// object
+
+console.log(typeof new TypeError('wow'));
+// object
+```
+
+Right, so that isn't useful. How about `instanceof`? After all, we can easily
+make our error types into subclasses using ES6 class syntax:
+
+```js
+class PasswordValidationError extends Error {}
+class TooShortError extends PasswordValidationError {}
+class NoUppercaseError extends PasswordValidationError {}
+class NoNumberError extends PasswordValidationError {}
+```
+
+You could also use its approximate equivalent in ES5:
+
+```js
+function PasswordValidationError(message) {
+	Error.call(this, message)
+}
+PasswordValidationError.prototype = Object.create(Error.prototype);
+
+function TooShortError(message) {
+	PasswordValidationError.call(this, message)
+}
+TooShortError.prototype = Object.create(PasswordValidationError.prototype);
+
+function NoUppercaseError(message) {
+	PasswordValidationError.call(this, message)
+}
+NoUppercaseError.prototype = Object.create(PasswordValidationError.prototype);
+
+
+function NoNumberError(message) {
+	PasswordValidationError.call(this, message)
+}
+NoNumberError.prototype = Object.create(NoNumberError.prototype);
+```
+
+With either of these, you can then create and throw your errors like this:
+
+```js
+throw new TooShortError('Password is too short');
+```
+```js
+throw new NoUppercaseError('Password must have an uppercase letter');
+```
+```js
+throw new NoNumberError('Password must have a number');
+```
+
+Then, ideally, you can handle your errors like this:
+
+```js
+try {
+	validatePassword(password);
+} catch (err) {
+	if (err instanceof TooShortError) {
+		// Handle the too short error.
+	} else if (err instanceof PasswordValidationError) {
+		// Handle any other kind of password validation error.
+	} else {
+		// Rethrow an unknown error.
+		throw err;
+	}
+}
+```
+
+If you try this approach, the results might seem promising at first, but there
+is a relatively subtle limitation of `instanceof` that can and will cause you
+some major headaches.
+
+While it may seem similar at a glance `instanceof` is *not* an equivalent to
+true static type checking, which is not possible in vanilla JS. `instanceof`
+merely approximates, by searching the first operand's prototype chain to see
+if it ever contains the exact same object as the `prototype` property of its
+second operand.
+
+This will never give you a false positive, but it *can* give you false negatives
+if you're ever in a situation where an object was created with a *copy* of the
+second operand. Yes, the prototype objects might be similar, but they are not
+literally the exact same object, which causes the check to fail.
+
+The classic example of this from web browsers is when dealing with instances
+passed across frames and/or iframes. In Node, this same issue might happen when
+you have multiple versions of the same constructor in your dependency tree,
+a not-uncommon situation that can arise when:
+
+- Conflicting dependency semver expressions require two different versions of
+  the same module.
+- Some installed modules can share the same version, but not yet been deduped.
+- `npm link` is used for anything whatsoever.
+
+Additionally, when you're transferring errors between various services and
+instances of services-- as is common in Node architectures-- you may need to
+serialize them and then rebuild them elsewhere. In order for `instanceof` to
+keep working, you would need to re-instantiate every error, and every error in
+its cause chain, using the same constructors. This can be complicated and
+fairly prone to mistakes.
+
+In any of the above scenarios, the above `catch` block could rethrow a
+`PasswordValidationError`. If that error is not caught somewhere further up the
+call stack, it could of course crash your entire app.
+
+Obviously this is a huge problem, so long story short: `instanceof`, while it
+has its uses, is not really robust enough for this purpose.
+
 
 ### A Solution: Full Names
