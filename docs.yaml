@@ -1,17 +1,14 @@
 # Config file for generated documentation, as described here:
 # https://github.com/documentationjs/documentation/blob/master/docs/CONFIG.md
+
+# Items below are not grouped with the `children` property because it makes the
+# HTML output terrible. Hopefully it improves in the future, for now we'll just
+# do it the old way.
+
 toc:
     - name: Classes
-      children:
-          - NaniError
-          - MultiError
+    - NaniError
+    - MultiError
 
     - name: Utility Functions
-      children:
-          - is
-          - getFullName
-          - getFullStack
-          - iterate
-          - find
-          - filter
-          - collapseInfo
+    # Items not listed will be appended in source order.
