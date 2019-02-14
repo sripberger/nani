@@ -7,31 +7,24 @@ describe('getFullName', function() {
 		expect(getFullName({ fullName })).to.equal(fullName);
 	});
 
-	context('provided object has no fullname', function() {
-		function testStandardErrorName(name) {
-			const expected = name === 'Error' ? 'Error' : `Error.${name}`;
+	context('provided object has no fullName', function() {
+		it('returns \'Error\' if name is \'Error\'', function() {
+			expect(getFullName({ name: 'Error' })).to.equal('Error');
+		});
 
-			it(`returns '${expected}' if name is ${name}`, function() {
-				expect(getFullName({ name })).to.equal(expected);
-			});
-		}
+		it('returns name appended to \'Error\' if name ends in \'Error\'', function() {
+			expect(getFullName({ name: 'FooError' }))
+				.to.equal('Error.FooError');
+			expect(getFullName({ name: 'BarError' }))
+				.to.equal('Error.BarError');
+		});
 
-		const standardErrorNames = [
-			'Error',
-			'RangeError',
-			'ReferenceError',
-			'SyntaxError',
-			'TypeError',
-			'EvalError',
-			'URIError',
-		];
+		it('returns null if name does not end with \'Error\'', function() {
+			expect(getFullName({ name: 'Foo' })).to.be.null;
+		});
 
-		for (const name of standardErrorNames) {
-			testStandardErrorName(name);
-		}
-
-		it('returns null if name is not known', function() {
-			expect(getFullName({ name: 'foo' })).to.be.null;
+		it('returns null if object has no name', function() {
+			expect(getFullName({})).to.be.null;
 		});
 	});
 });
