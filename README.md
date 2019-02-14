@@ -1,4 +1,4 @@
-# nani
+# Nani
 Better Error handling for Node, inspired in part by
 [VError](https://www.npmjs.com/package/verror).
 
@@ -10,7 +10,7 @@ are not, the idea is that errors can be given a `cause` when constructed. A
 cause's message will be chained to the end of the wrapping error's message,
 making it easy for a human programmer to get the full story at a glance.
 
-`nani` provides the `NaniError` class for this purpose, among other features:
+Nani provides the `NaniError` class for this purpose, among other features:
 
 ```js
 const { NaniError } = require('nani');
@@ -40,8 +40,8 @@ NaniError: Parsing failed : Unexpected token i in JSON at position 0
 */
 ```
 
-The cause is of course optional, and defaults to `null`. If the shortMessage is
-omitted, a generic default one will be used instead.
+The cause is of course optional, and defaults to `null`. If the `shortMessage`
+is omitted, a generic default one will be used instead.
 
 The `cause`, `shortMessage`, and full `message` will be available as properties
 on the created error.
@@ -89,8 +89,8 @@ purposes.
 ## Viewing the Full Stack
 Node's default uncaught exception handler simply prints out the `stack` property
 of the exception to `stderr` and exits. This, of course, doesn't tell you
-anything about the stack traces in the cause chain. To view this, `nani`
-provides the `getFullStack` function:
+anything about the stack traces in the cause chain. To view this, Nani provides
+the `getFullStack` function:
 
 ```js
 const { NaniError, getFullStack } = require('nani');
@@ -165,8 +165,8 @@ qux
 ```
 
 Since digging through the whole cause chain for all of its info can be tedious,
-`nani` provides the `collapseInfo` function, which assigns the properties from
-all info objects in the chain together into a single object:
+Nani provides the `collapseInfo` function, which assigns the properties from all
+info objects in the chain together into a single object:
 
 ```js
 const err = new NaniError({
@@ -194,7 +194,7 @@ value *earlier* in the chain is prioritized.
 
 ## Shorthand Constructors
 Much of the time the `shortMessage` and `cause` options are the only ones you
-need when creating NaniError instances, so the constructor also supports
+need when creating `NaniError` instances, so the constructor also supports
 shorthand signatures like so:
 
 ```js
@@ -219,7 +219,7 @@ throw new NaniError();
 ```
 
 ## Iterating Through the Cause Chain
-For convenience, `nani` provides a
+For convenience, Nani provides a
 [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)
 called `iterate`, which makes it easy to step through an error and it's cause
 chain:
@@ -268,8 +268,8 @@ Omg bad error!
 ```
 
 ### Iteration Utilities
-In addition to the `iterate` itself, `nani` includes utility functions for
-operations you're commonly going to want to do while iterating:
+In addition to the `iterate` function itself, Nani includes utility functions
+for operations you're commonly going to want to do while iterating:
 
 - `find`: Returns the first error in the chain matching a predicate function.
 - `filter`: Returns all errors in the chain that match a predicate function.
@@ -308,7 +308,7 @@ to the user all the problems, instead of just the first one your validation code
 encountered-- or collections of async operations where some operations may fail
 independently of the others.
 
-Like `VError`, `nani` provides a `MultiError` class for handling these
+Like `VError`, Nani provides a `MultiError` class for handling these
 situations:
 
 ```js
@@ -341,8 +341,8 @@ const err = new MultiError(new Error('foo'), new Error('bar'));
 ```
 
 ### Iterating MultiErrors
-Unlike `VError`, `nani` makes it easy to iterate not just through primary
-causes, but through the entire cause chain of every error in a `MultiError`, as
+Unlike VError, Nani makes it easy to iterate not just through primary causes,
+but through the entire cause chain of every error in your `MultiError`s, as
 well. Simply use the `iterate` function:
 
 ```js
