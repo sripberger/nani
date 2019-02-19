@@ -1,8 +1,11 @@
 # Nani
 Better Error handling for Node, inspired in part by
-[VError](https://www.npmjs.com/package/verror).
+[VError](https://www.npmjs.com/package/verror). Includes a base class for custom
+error types, along with utilities for identifying your errors based on their
+class hierarchy *without* relying on `instanceof`.
 
-Makes it easier to tell what happened when things explode.
+Makes it easier to tell what happened when things explode. :)
+
 
 ## The Cause Chain
 Users of VError will be familiar with cause message chains, but for those that
@@ -46,6 +49,7 @@ is omitted, a generic default one will be used instead.
 The `cause`, `shortMessage`, and full `message` will be available as properties
 on the created error.
 
+
 ## Hiding Cause Messages
 Occasionally, you will want an error's message to simply match its shortMessage,
 without appending the cause's message. To do so, set the `hideCauseMessage`
@@ -85,6 +89,7 @@ This can be useful for public-facing API's where you don't want to clutter
 the error messages your users see with internal stuff they don't care about,
 while still preserving the underlying cause chain for your own debugging
 purposes.
+
 
 ## Viewing the Full Stack
 Node's default uncaught exception handler simply prints out the `stack` property
@@ -143,6 +148,7 @@ Caused by: SyntaxError: Unexpected token i in JSON at position 0
 old JS Error. If the error has no `cause` property, it will simply print out the
 stack as normal.
 
+
 ## Error Info
 Like `VError`, `NaniError` supports arbitrary data in the form of the `info`
 object, which can be used to provide further detail about what happened. This
@@ -192,6 +198,7 @@ Running the above code would log the following:
 If the same info property name is encountered more than once in the chain, the
 value *earlier* in the chain is prioritized.
 
+
 ## Shorthand Constructors
 Much of the time the `shortMessage` and `cause` options are the only ones you
 need when creating `NaniError` instances, so the constructor also supports
@@ -217,6 +224,7 @@ throw new NaniError('Omg bad error!', new Error('Cause of the error'), {
 // default everything
 throw new NaniError();
 ```
+
 
 ## Iterating Through the Cause Chain
 For convenience, Nani provides a
@@ -267,6 +275,7 @@ Omg bad error!
 */
 ```
 
+
 ### Iteration Utilities
 In addition to the `iterate` function itself, Nani includes utility functions
 for operations you're commonly going to want to do while iterating:
@@ -299,6 +308,7 @@ console.log(find((e) => e.info && e.info.isCool));
 console.log(filter((e) => e.info && e.info.isCool));
 // [ { NaniError: bar : baz : qux }, { NaniError: qux } ]
 ```
+
 
 ## MultiErrors
 Sometimes you run into situations where you need to collect multiple errors
@@ -340,6 +350,7 @@ equivalent to the constructor call above:
 const err = new MultiError(new Error('foo'), new Error('bar'));
 ```
 
+
 ### Iterating MultiErrors
 Unlike VError, Nani makes it easy to iterate not just through primary causes,
 but through the entire cause chain of every error in your `MultiError`s, as
@@ -380,6 +391,73 @@ The behavior demonstrated above holds true for the previously-described
 iteration utilities-- `find` and `filter`-- in addition to the `iterate`
 function itself. It is also reflected in `collapseInfo`, which processes each
 error in the chain in the same order.
+
+
+## Customizing the Default Message
+If you have an error message that you find yourself using a lot, you can easily
+replace the usual generic default error message by simply inheriting from
+`NaniError` and overriding the static `getDefaultMessage` method:
+
+```js
+const { NaniError } = require('nani');
+
+class MyError extends NaniError {
+	static getDefaultMessage() {
+		return 'Holy crap, bad stuff happened!';
+	}
+}
+
+throw new MyError();
+
+/*
+Running the above code produces something like the following:
+
+MyError: Holy crap, bad stuff happened!
+    at Object.<anonymous> (/home/sripberger/projects/personal/nani/omg.js:9:7)
+    at Module._compile (module.js:635:30)
+    at Object.Module._extensions..js (module.js:646:10)
+    at Module.load (module.js:554:32)
+    at tryModuleLoad (module.js:497:12)
+    at Function.Module._load (module.js:489:3)
+    at Function.Module.runMain (module.js:676:10)
+    at startup (bootstrap_node.js:187:16)
+    at bootstrap_node.js:608:3
+*/
+```
+
+
+### Putting Info in the Default Message
+The `getDefaultMessage` method receives a single argument, which will be a
+reference to the `options.info` object, if any, or a empty object otherwise.
+This makes it easy to include some of that info in your error messages:
+
+```js
+const { NaniError } = require('nani');
+
+class MyError extends NaniError {
+	static getDefaultMessage(info) {
+		return `Holy crap, ${info.what || 'bad stuff'} happened!`;
+	}
+}
+
+throw new MyError({ info: { what: 'terrible things' } });
+
+/*
+Running the above code produces something like the following:
+
+MyError: Holy crap, terrible things happened!
+    at Object.<anonymous> (/home/sripberger/projects/personal/nani/omg.js:9:7)
+    at Module._compile (module.js:635:30)
+    at Object.Module._extensions..js (module.js:646:10)
+    at Module.load (module.js:554:32)
+    at tryModuleLoad (module.js:497:12)
+    at Function.Module._load (module.js:489:3)
+    at Function.Module.runMain (module.js:676:10)
+    at startup (bootstrap_node.js:187:16)
+    at bootstrap_node.js:608:3
+
+*/
+```
 
 
 ## The Dilemma: Identifying Standard JS Errors
@@ -524,6 +602,7 @@ of just knowing what they are by reading them.
 
 Long story short, identifying errors in JS kind of sucks. :\
 
+
 ### What About `typeof` and `instanceof`?
 Those who are unfamiliar with the quirks Node development and JS as a language
 may be tempted to look into JS's standard
@@ -660,3 +739,191 @@ has its uses, is not really robust enough for this purpose.
 
 
 ### A Solution: Full Names
+To solve this dilemma-- allowing you to do something like traditional error
+type-checking without relying on `instanceof`-- Nani uses a property called
+`fullName`. It's similar to the prefixing solution discussed above, except that
+full names follow a simple, predictable format and are easy to generate based on
+syntax you may already be using.
+
+The basic idea is this: An error class's name is simply the name of its
+constructor function. It's fullName, however, is a dot-separated list of all of
+the constructor names in its inheritance chain. Both of these properties are
+available on all instances of error constructors, as well.
+
+The `NaniError` class implements these properties, so as long as you include it
+at the base of your hierarchies, generating fullNames requires no effort on
+your part.
+
+For example, to make the password validation hierarchy discussed above, it's
+just this simple:
+
+```js
+const { NaniError } = require('nani');
+
+class PasswordValidationError extends NaniError {}
+class TooShortError extends PasswordValidationError {}
+class NoUppercaseError extends PasswordValidationError {}
+class NoNumberError extends PasswordValidationError {}
+
+console.log(PasswordValidationError.fullName);
+// Error.NaniError.PasswordValidationError
+
+console.log(TooShortError.fullName);
+// Error.NaniError.PasswordValidationError.TooShortError
+
+console.log(NoUppercaseError.fullName);
+// Error.NaniError.PasswordValidationError.NoUppercaseError
+
+console.log(NoNumberError.fullName);
+// Error.NaniError.PasswordValidationError.NoNumberError
+
+// Name and fullName are automatically available on instances as well.
+const err = new NoUppercaseError();
+
+console.log(err.name);
+// NoUppercaseError
+
+console.log(err.fullName)
+// Error.NaniError.PasswordValidationError.NoUppercaseError
+```
+
+Of course, not every error instance or error class you're going to be dealing
+with will inherit from `NaniError`, so Nani provides the function `getFullName`,
+which, for convenience, attempts to support these through a simple mechanism:
+
+1. If a fullName property exists, use that.
+2. If if the name property is 'Error', the fullName is also assumed to be
+   'Error'.
+3. If the name property *ends with* 'Error', the fullName is assumed to be the
+   name property appended to 'Error', separated by a dot.
+4. In all other cases, the fullName is assumed to be `null`, indicating that it
+   can't be identified.
+
+For example:
+```js
+const { NaniError, getFullName } = require('nani');
+
+class PasswordValidationError extends NaniError {}
+class TooShortError extends PasswordValidationError {}
+class MyCustomError extends Error {}
+
+console.log(getFullName(PasswordValidationError));
+// Error.NaniError.PasswordValidationError
+
+console.log(getFullName(TooShortError));
+// Error.NaniError.PasswordValidationError.TooShortError
+
+console.log(getFullName(Error));
+// Error
+
+console.log(getFullName(TypeError));
+// Error.TypeError
+
+console.log(getFullName(MyCustomError));
+// Error.MyCustomError
+```
+
+Since all standard Error subclass names end in 'Error'-- as do most custom
+ones-- you can reliably use `getFullName` much of the time. Of course, if you
+already have your own error name hierarchies that aren't based on the `fullName`
+property, these will not be supported.
+
+
+### Using Full Names to Identify Errors
+To make easy use of full names for identification, Nani provides the `is`
+function. `is` will get the full name of both of its arguments, and will return
+true if and only if both full names can be identified and the second argument's
+full name *starts with* the first argument's full name. This makes checks
+against your hierarchies read quite naturally.
+
+Going back to our password validation example, you can declare your error
+classes like so:
+```js
+class PasswordValidationError extends NaniError {}
+class TooShortError extends PasswordValidationError {}
+class NoUppercaseError extends PasswordValidationError {}
+class NoNumberError extends PasswordValidationError {}
+```
+
+Throw your errors like so:
+```js
+throw new TooShortError('Password is too short');
+```
+```js
+throw new NoUppercaseError('Password must have an uppercase letter');
+```
+```js
+throw new NoNumberError('Password must have a number');
+```
+
+And handle your errors like so:
+```js
+const { is } = require('nani');
+
+try {
+	validatePassword(password);
+} catch (err) {
+	if (is(TooShortError, err)) {
+		// Handle the too short error.
+	} else if (is(PasswordValidationError, err)) {
+		// Handle any other kind of password validation error.
+	} else {
+		// Rethrow an unknown error.
+		throw err;
+	}
+}
+```
+
+This mechanism therefore gives you the advantages of `instanceof`, without
+actually relying on `instanceof`.
+
+
+### Shorthand Forms for Iteration Utilities
+Since the `is` function is likely to be used quite a bit with them, the `find`
+and `filter` iteration utilities support a shorthand form. If the predicate is
+an Error constructor-- i.e. it has a fullName that starts with `Error`-- the
+predicate will return true for any iterated item that `is` that constructor.
+
+For example:
+
+```js
+const { find, filter, is } = require('nani');
+
+const err = new NaniError();
+
+let result;
+
+// These two statements are effectively equivalent:
+result = find(err, (e) => is(NaniError, e));
+result = find(err, NaniError);
+
+// As are these two:
+result = filter(err, (e) => is(NaniError, e));
+result = filter(err, NaniError);
+```
+
+
+### Namespacing Your Errors
+Considering the way full names work, it *is* possible to have collisions,
+especially if you use fairly general error names that others are likely to use
+in their own projects, like `ValidationError` or `InternalError`. To deal with
+this, I recommend that you make a single base error for all of your hierarchies,
+preferably named based on your organization, or the name of your project.
+
+If you're writing a validation library called `foobar`, for example, instead of
+just doing this:
+
+```js
+const { NaniError } = require('NaniError')
+
+class ValidationError extends NaniError {}
+```
+
+Try doing something like this:
+
+```js
+const { NaniError } = require('NaniError')
+
+class FoobarError extends NaniError {}
+class ValidationError extends FoobarError {}
+```
