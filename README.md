@@ -6,6 +6,9 @@ class hierarchy *without* relying on `instanceof`.
 
 Makes it easier to tell what happened when things explode. :)
 
+Check out the [api docs](https://sripberger.github.io/nani/) or use the
+following guide to get started.
+
 
 ## The Cause Chain
 Users of VError will be familiar with cause message chains, but for those that
