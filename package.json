@@ -5,6 +5,9 @@
   "author": "Steve Ripberger",
   "license": "MIT",
   "repository": "github:sripberger/nani",
+  "keywords": [
+    "error"
+  ],
   "scripts": {
     "lint": "eslint .",
     "unit": "mocha -r esm test/setup.js test/unit",
