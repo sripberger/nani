@@ -6,7 +6,8 @@
   "license": "MIT",
   "repository": "github:sripberger/nani",
   "keywords": [
-    "error"
+    "error",
+    "verror"
   ],
   "scripts": {
     "lint": "eslint .",
