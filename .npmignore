@@ -1,5 +1,6 @@
 test/
-docs.yaml
 .eslintrc.yaml
 .eslintignore
 .gitignore
+docs.yaml
+nani.png
