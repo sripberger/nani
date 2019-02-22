@@ -43,7 +43,7 @@ describe('is', function() {
 		expect(is(sup, err)).to.be.false;
 	});
 
-	it('returns false if err fullName is null', function() {
+	it('returns false if sup fullName is null', function() {
 		sinon.stub(getFullNameModule, 'getFullName')
 			.withArgs(sup).returns(null)
 			.withArgs(err).returns('Error.SuperError.SubError');

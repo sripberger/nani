@@ -163,4 +163,32 @@ describe('is', function() {
 		expect(is(BarError, err)).to.be.false;
 		expect(is(BazError, err)).to.be.false;
 	});
+
+	it('supports checking undefined and null', function() {
+		// Check undefined
+		expect(is(Error, undefined)).to.be.false;
+		expect(is(EvalError, undefined)).to.be.false;
+		expect(is(RangeError, undefined)).to.be.false;
+		expect(is(ReferenceError, undefined)).to.be.false;
+		expect(is(SyntaxError, undefined)).to.be.false;
+		expect(is(TypeError, undefined)).to.be.false;
+		expect(is(URIError, undefined)).to.be.false;
+		expect(is(NaniError, undefined)).to.be.false;
+		expect(is(FooError, undefined)).to.be.false;
+		expect(is(BarError, undefined)).to.be.false;
+		expect(is(BazError, undefined)).to.be.false;
+
+		// Check null
+		expect(is(Error, null)).to.be.false;
+		expect(is(EvalError, null)).to.be.false;
+		expect(is(RangeError, null)).to.be.false;
+		expect(is(ReferenceError, null)).to.be.false;
+		expect(is(SyntaxError, null)).to.be.false;
+		expect(is(TypeError, null)).to.be.false;
+		expect(is(URIError, null)).to.be.false;
+		expect(is(NaniError, null)).to.be.false;
+		expect(is(FooError, null)).to.be.false;
+		expect(is(BarError, null)).to.be.false;
+		expect(is(BazError, null)).to.be.false;
+	});
 });

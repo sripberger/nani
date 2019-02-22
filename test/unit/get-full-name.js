@@ -7,6 +7,11 @@ describe('getFullName', function() {
 		expect(getFullName({ fullName })).to.equal(fullName);
 	});
 
+	it('returns null if provided is null or undefined', function() {
+		expect(getFullName(null)).to.be.null;
+		expect(getFullName(undefined)).to.be.null;
+	});
+
 	context('provided object has no fullName', function() {
 		it('returns \'Error\' if name is \'Error\'', function() {
 			expect(getFullName({ name: 'Error' })).to.equal('Error');
