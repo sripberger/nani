@@ -278,6 +278,37 @@ Omg bad error!
 */
 ```
 
+### A Note On Circular References
+Generally, you want to avoid having any references on your errors that point to
+errors earlier in the cause chain, as doing so can lead to infinite loops and
+other critical errors, especially if you need to serialize your errors.
+
+In the event that you *do* cause such a circular reference, the `iterate`
+function will ignore it. This is really more to make Nani's functions more
+robust, but you should probably never do this on purpose:
+
+```js
+const { NaniError, iterate } = require('nani');
+
+const cause = new NaniError('Cause of error');
+const err = new NaniError('Omg bad error!', cause);
+
+// Circular reference created here.
+// Again, *you should never actually do this!*
+cause.cause = err;
+
+for (const e of iterate(err)) {
+	console.log(e.message);
+}
+
+/*
+Running the above code logs the following:
+
+Omg bad error! : Cause of error
+Cause of error
+*/
+```
+
 
 ### Iteration Utilities
 In addition to the `iterate` function itself, Nani includes utility functions
@@ -394,6 +425,32 @@ The behavior demonstrated above holds true for the previously-described
 iteration utilities-- `find` and `filter`-- in addition to the `iterate`
 function itself. It is also reflected in `collapseInfo`, which processes each
 error in the chain in the same order.
+
+
+### A Note On Duplicate References
+MultiErrors allow you to potentially duplicate references to the exact same
+object in your error structures. This should generally be avoided for reasons
+similar to the circular references described above.
+
+In the event that you *do* duplicate an error in the structure, `iterate` will
+yield it only once, and ignore it from that point forward:
+
+```js
+const { NaniError, iterate } = require('nani');
+
+const nestedErr = new NaniError('Nested error');
+const err = new MultiError(nestedErr, nestedErr);
+
+for (const e of iterate(err)) {
+	console.log(e.message);
+}
+
+/*
+Running the above code logs the following:
+
+Nested error
+*/
+```
 
 
 ## Customizing the Default Message
