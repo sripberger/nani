@@ -6,6 +6,8 @@ class hierarchy *without* relying on `instanceof`.
 
 Makes it easier to tell what happened when things explode. :)
 
+![Screenshot](https://github.com/sripberger/nani/raw/master/nani.png)
+
 Check out the [api docs](https://sripberger.github.io/nani/) or use the
 following guide to get started.
 
