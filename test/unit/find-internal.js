@@ -1,5 +1,5 @@
 import * as isModule from '../../lib/is';
-import * as iterateModule from '../../lib/iterate';
+import * as iterateExternal from '../../lib/iterate-external';
 import {
 	filterByPredicate,
 	findByPredicate,
@@ -64,7 +64,7 @@ describe('Internal find utils', function() {
 			bazErr = new Error('baz');
 			predicate = sinon.stub().named('predicate').returns(false);
 
-			sinon.stub(iterateModule, 'iterate').returns({
+			sinon.stub(iterateExternal, 'iterate').returns({
 				*[Symbol.iterator]() {
 					yield fooErr;
 					yield barErr;
@@ -77,8 +77,8 @@ describe('Internal find utils', function() {
 			it('iterates over causes of err', function() {
 				findByPredicate(err, predicate);
 
-				expect(iterateModule.iterate).to.be.calledOnce;
-				expect(iterateModule.iterate).to.be.calledWith(err);
+				expect(iterateExternal.iterate).to.be.calledOnce;
+				expect(iterateExternal.iterate).to.be.calledWith(err);
 			});
 
 			it('invokes predicate with each cause', function() {
@@ -112,8 +112,8 @@ describe('Internal find utils', function() {
 			it('iterates over causes of err', function() {
 				filterByPredicate(err, predicate);
 
-				expect(iterateModule.iterate).to.be.calledOnce;
-				expect(iterateModule.iterate).to.be.calledWith(err);
+				expect(iterateExternal.iterate).to.be.calledOnce;
+				expect(iterateExternal.iterate).to.be.calledWith(err);
 			});
 
 			it('invokes predicate with each cause', function() {

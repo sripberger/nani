@@ -1,4 +1,4 @@
-import * as iterateModule from '../../lib/iterate';
+import * as iterateExternal from '../../lib/iterate-external';
 import { collapseInfo } from '../../lib/collapse-info';
 
 describe('collapseInfo', function() {
@@ -10,7 +10,7 @@ describe('collapseInfo', function() {
 		barErr = new Error('Bar error');
 		bazErr = new Error('Baz error');
 
-		sinon.stub(iterateModule, 'iterate').returns({
+		sinon.stub(iterateExternal, 'iterate').returns({
 			*[Symbol.iterator]() {
 				yield fooErr;
 				yield barErr;
@@ -22,8 +22,8 @@ describe('collapseInfo', function() {
 	it('iterates over causes of err', function() {
 		collapseInfo(err);
 
-		expect(iterateModule.iterate).to.be.calledOnce;
-		expect(iterateModule.iterate).to.be.calledWith(err);
+		expect(iterateExternal.iterate).to.be.calledOnce;
+		expect(iterateExternal.iterate).to.be.calledWith(err);
 	});
 
 	it('returns collapsed info from causes, prioritizing earlier values', function() {

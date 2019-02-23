@@ -1,4 +1,4 @@
-import { iterate } from '../../lib/iterate';
+import { iterate } from '../../lib/iterate-external';
 
 describe('iterate', function() {
 	it('iterates all nested errors', function() {
