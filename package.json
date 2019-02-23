@@ -1,6 +1,6 @@
 {
   "name": "nani",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Better error handling for Node",
   "author": "Steve Ripberger",
   "license": "MIT",
