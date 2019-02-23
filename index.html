@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>nani 2.1.0 | Documentation</title>
+  <title>nani 2.2.0 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>nani</h3>
-          <div class='mb1'><code>2.1.0</code></div>
+          <div class='mb1'><code>2.2.0</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -176,6 +176,16 @@
                   href='#iterate'
                   class="">
                   iterate
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#iteratefull'
+                  class="">
+                  iterateFull
                   
                 </a>
                 
@@ -1327,13 +1337,87 @@ chain appended. This will include only the first error in the case of a
 
   <p>A generator function for iterating through an error and all of its causes.
 When multi-errors are encountered, this function will iterate down the entire
-cause chain of each embedded error in sequence. If an object appears more
-than once in the sequence-- as can be the case if your error has duplicates
-or circular references-- the subsequent appearances will be ignored.</p>
+cause chain of each embedded error in sequence. If an error would appear
+more than once in the sequence, subsequent appearances will be ignored.</p>
 
  
   
     <div class='pre p1 fill-light mt0'>iterate(err: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>err</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>)</code>
+	    Error instance to iterate.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='iteratefull'>
+      iterateFull
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Another generator function, similar to <code>iterate</code>, except that it does not
+skip duplicate references, and yields objects with some information about
+each error's context within the structure instead of just the error itself.
+It does check for circular references that would create an infinite loop,
+however, and ignores those just to be safe.</p>
+<p>Error info is yielded in the form of objects with three properties:</p>
+<ul>
+<li><code>err</code> - The Error instance.</li>
+<li><code>parent</code> - The parent of <code>err</code>, if any. <code>null</code> otherwise.</li>
+<li><code>inArray</code> - <code>true</code> if <code>err</code> is in an <code>errors</code> array on its parent,
+<code>false</code> otherwise.</li>
+</ul>
+<p>This function will normally give you a bit more informaiton than you need,
+but it can be useful for writing serializers, among other things.</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>iterateFull(err: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>)</div>
    
   
   
