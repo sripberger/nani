@@ -989,3 +989,65 @@ const { NaniError } = require('NaniError')
 class FoobarError extends NaniError {}
 class ValidationError extends FoobarError {}
 ```
+
+
+## Full Iteration
+As discussed before, the `iterate` generator function simply yields all of the
+errors in an error structure in sequence, skipping any duplicates. This is
+usually what you want, but sometimes you need more information about the
+structure itself-- if you're writing a serializer, for example.
+
+For this purpose, nani provides `iterateFull`. It is similar to `iterate`,
+except that it does not skip duplicate references, and yields objects with some
+information about each error's context within the structure. It *does* check for
+circular references that would create an infinite loop, however, and ignores
+those just to be safe.
+
+Error info is yielded in the form of objects with three properties:
+- `err` - The Error instance.
+- `parent` - The parent of `err`, if any. `null` otherwise.
+- `inArray` - `true` if `err` is in an `errors` array on its parent,
+  `false` otherwise.
+
+ ```js
+const { NaniError, MultiError, iterateFull } = require('nani');
+
+const outerErr = new NaniError({
+	shortMessage: 'outermost error',
+	cause: new MultiError(
+		new NaniError('inner error', new Error('innermost error')),
+		new NaniError('another inner error')
+	)
+});
+
+for (const { err, parent, inArray } of iterateFull(outerErr)) {
+	console.log(`Message: ${err.message}`);
+	console.log(`Parent Message: ${parent ? parent.message : null}`);
+	console.log(`In Array: ${inArray}\n`);
+}
+
+ /*
+ Running the above code will log the following:
+
+ Message: outermost error : First of 2 errors : inner error : innermost error
+ Parent Message: null
+ In Array: false
+
+ Message: First of 2 errors : inner error : innermost error
+ Parent Message: outermost error : First of 2 errors : inner error : innermost error
+ In Array: false
+
+ Message: inner error : innermost error
+ Parent Message: First of 2 errors : inner error : innermost error
+ In Array: true
+
+ Message: innermost error
+ Parent Message: inner error : innermost error
+ In Array: false
+
+ Message: another inner error
+ Parent Message: First of 2 errors : inner error : innermost error
+ In Array: true
+
+ */
+ ```
