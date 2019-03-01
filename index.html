@@ -2,20 +2,20 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>nani 2.2.0 | Documentation</title>
-  <meta name='viewport' content='width=device-width,initial-scale=1'>
-  <link href='assets/bass.css' type='text/css' rel='stylesheet' />
-  <link href='assets/style.css' type='text/css' rel='stylesheet' />
-  <link href='assets/github.css' type='text/css' rel='stylesheet' />
-  <link href='assets/split.css' type='text/css' rel='stylesheet' />
+  <title>nani 2.2.1 | Documentation</title>
   <meta name='description' content='Better error handling for Node'>
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <link href='assets/bass.css' rel='stylesheet' />
+  <link href='assets/style.css' rel='stylesheet' />
+  <link href='assets/github.css' rel='stylesheet' />
+  <link href='assets/split.css' rel='stylesheet' />
 </head>
 <body class='documentation m0'>
     <div class='flex'>
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>nani</h3>
-          <div class='mb1'><code>2.2.0</code></div>
+          <div class='mb1'><code>2.2.1</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -245,50 +245,6 @@
   </section>
 </div>
           
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='classes'>
-      Classes
-    </h3>
-    
-    
-  </div>
-  
-
-  
-
- 
-   
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -308,10 +264,7 @@
 custom error types should inherit from this class in order to make use of its
 constructor pattern and fullName resolution capabilities.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>new NaniError(shortMessage: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?, cause: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>?, options: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</div>
-   
   
   
     <p>
@@ -472,10 +425,7 @@ fullName, it is assumed to be 'Error'.</p>
 <p>This is a read-only property and should not be overridden, as it is
 critical to nani's mechanism for checking against error name heirarchies.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>fullName</div>
-   
   
     <p>
       Type:
@@ -489,6 +439,8 @@ critical to nani's mechanism for checking against error name heirarchies.</p>
   
   
   
+  
+
   
 
   
@@ -527,10 +479,7 @@ critical to nani's mechanism for checking against error name heirarchies.</p>
 provided with one. By default, it returns a generic message, but it may
 be overridden to provide custom default messages for your subclasses.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>getDefaultMessage(info: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
-   
   
   
 
@@ -584,6 +533,8 @@ include values from
   
 
   
+
+  
 </section>
 
       </div>
@@ -611,10 +562,7 @@ include values from
 
   <p>The error's message without any cause chain.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>shortMessage</div>
-   
   
     <p>
       Type:
@@ -628,6 +576,8 @@ include values from
   
   
   
+  
+
   
 
   
@@ -664,10 +614,7 @@ include values from
 
   <p>The error's cause, if any.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>cause</div>
-   
   
     <p>
       Type:
@@ -681,6 +628,8 @@ include values from
   
   
   
+  
+
   
 
   
@@ -717,10 +666,7 @@ include values from
 
   <p>The error's info object, if any.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>info</div>
-   
   
     <p>
       Type:
@@ -734,6 +680,8 @@ include values from
   
   
   
+  
+
   
 
   
@@ -772,10 +720,7 @@ include values from
 <p>This is a read-only property and should not be overridden, as it is
 critical to nani's mechanism for checking against error name heirarchies.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>name</div>
-   
   
     <p>
       Type:
@@ -789,6 +734,8 @@ critical to nani's mechanism for checking against error name heirarchies.</p>
   
   
   
+  
+
   
 
   
@@ -828,10 +775,7 @@ constructor.</p>
 <p>This is a read-only property and should not be overridden, as it is
 critical to Nani's mechanism for checking against error name heirarchies.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>fullName</div>
-   
   
     <p>
       Type:
@@ -862,6 +806,8 @@ critical to Nani's mechanism for checking against error name heirarchies.</p>
   
 
   
+
+  
 </section>
 
       </div>
@@ -872,8 +818,11 @@ critical to Nani's mechanism for checking against error name heirarchies.</p>
   
 
   
+
+  
 </section>
 
+          
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -898,10 +847,7 @@ provided to it.</p>
 included in the full message, but all errors (including that one) will be
 stored on an <code>errors</code> property for future use.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>new MultiError(errors: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>>?, errors: ...<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>)</div>
-   
   
   
     <p>
@@ -975,10 +921,7 @@ ignored.
 
   <p>Array of errors provided to the constructor.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>errors</div>
-   
   
     <p>
       Type:
@@ -1009,6 +952,8 @@ ignored.
   
 
   
+
+  
 </section>
 
       </div>
@@ -1019,8 +964,11 @@ ignored.
   
 
   
+
+  
 </section>
 
+          
         
           
             <div class='keyline-top-not py2'>
@@ -1037,50 +985,6 @@ ignored.
   </section>
 </div>
           
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='utility-functions'>
-      Utility Functions
-    </h3>
-    
-    
-  </div>
-  
-
-  
-
- 
-   
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -1100,10 +1004,7 @@ ignored.
 fullName starts with sup's fullName. This allows for checking errors against
 class heirarchies without relying on <code>instanceof</code>.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>is(sup: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>?, err: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)?): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
-   
   
   
 
@@ -1170,8 +1071,11 @@ otherwise.
   
 
   
+
+  
 </section>
 
+          
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -1194,10 +1098,7 @@ with 'Error', then the fullName will be the name appended to 'Error',
 separated by a dot. This enables some support for error classes that are not
 subclasses of NaniError, by assuming they're at least instances of Error.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>getFullName(err: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)?): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | null)</div>
-   
   
   
 
@@ -1246,8 +1147,11 @@ or falsy, this function will return null.
   
 
   
+
+  
 </section>
 
+          
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -1267,10 +1171,7 @@ or falsy, this function will return null.
 chain appended. This will include only the first error in the case of a
 <code>MultiError</code>.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>getFullStack(err: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
-   
   
   
 
@@ -1318,8 +1219,11 @@ chain appended. This will include only the first error in the case of a
   
 
   
+
+  
 </section>
 
+          
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -1340,10 +1244,7 @@ When multi-errors are encountered, this function will iterate down the entire
 cause chain of each embedded error in sequence. If an error would appear
 more than once in the sequence, subsequent appearances will be ignored.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>iterate(err: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>)</div>
-   
   
   
 
@@ -1383,8 +1284,11 @@ more than once in the sequence, subsequent appearances will be ignored.</p>
   
 
   
+
+  
 </section>
 
+          
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -1415,10 +1319,7 @@ however, and ignores those just to be safe.</p>
 <p>This function will normally give you a bit more informaiton than you need,
 but it can be useful for writing serializers, among other things.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>iterateFull(err: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>)</div>
-   
   
   
 
@@ -1458,8 +1359,11 @@ but it can be useful for writing serializers, among other things.</p>
   
 
   
+
+  
 </section>
 
+          
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -1481,10 +1385,7 @@ with each cause as its first argument. However, if it is an Error
 constructor, this function will instead find a cause for which <code>is</code> returns
 true for that constructor.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>find(err: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>, predicate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a> | null)</div>
-   
   
   
 
@@ -1541,8 +1442,11 @@ true for that constructor.</p>
   
 
   
+
+  
 </section>
 
+          
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -1561,10 +1465,7 @@ true for that constructor.</p>
   <p>Similar to <code>findCause</code>, except that it returns an array of <em>all</em> matched
 errors, instead of just the first.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>filter(err: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>, predicate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>></div>
-   
   
   
 
@@ -1621,8 +1522,11 @@ errors, instead of just the first.</p>
   
 
   
+
+  
 </section>
 
+          
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -1642,10 +1546,7 @@ errors, instead of just the first.</p>
 collapsing all properties into a single object. Values encountered earlier
 in the cause chain are prioritized.</p>
 
- 
-  
     <div class='pre p1 fill-light mt0'>collapseInfo(err: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
-   
   
   
 
@@ -1693,8 +1594,11 @@ in the cause chain are prioritized.</p>
   
 
   
+
+  
 </section>
 
+          
         
       </div>
     </div>
