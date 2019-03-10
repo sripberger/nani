@@ -386,6 +386,27 @@ equivalent to the constructor call above:
 const err = new MultiError(new Error('foo'), new Error('bar'));
 ```
 
+### Creating MultiErrors
+You can use the `MultiError` constructor directly as shown above, or you can use
+Nani's `fromArray` utility function. This function is similar to VError's
+`errorFromList` method, in that it will wrap an array of errors in a
+`MultiError` if and only if it is necessary to do so:
+
+- If the provided array is empty, it returns `null`.
+- If the provided array has only one element, it returns that element.
+- If the provided array has more than one element, it returns a `MultiError`
+  with the array as its `errors` property.
+
+```js
+const { NaniError, fromArray } = require('nani');
+
+// Assume this returns an array with some unknown number of errors...
+const causes = getSomeErrors();
+
+// This will either have null or a single error as its cause.
+throw new NaniError('Some bad things maybe happened', fromArray(causes));
+```
+
 
 ### Iterating MultiErrors
 Unlike VError, Nani makes it easy to iterate not just through primary causes,
