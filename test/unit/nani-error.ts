@@ -1,0 +1,252 @@
+import * as sinon from 'sinon';
+import { ErrorOptions } from '../../lib/error-options';
+import { NaniError } from '../../lib/nani-error';
+import { expect } from 'chai';
+
+class TestError extends NaniError {}
+
+describe('NaniError', function() {
+	it('extends Error', function() {
+		expect(new TestError()).to.be.an.instanceof(Error);
+	});
+
+	describe('constructor', function() {
+		let options: ErrorOptions;
+		let _normalizeArgs: sinon.SinonStub;
+
+		beforeEach(function() {
+			options = {};
+			_normalizeArgs = sinon.stub(
+				TestError as any,
+				'_normalizeArgs',
+			).returns(options);
+		});
+
+		it('normalizes arguments into options', function() {
+			const args = [ 'short message', new Error('cause'), {} ];
+
+			// eslint-disable-next-line no-new
+			new TestError(...args);
+
+			expect(_normalizeArgs).to.be.calledOnce;
+			expect(_normalizeArgs).to.be.calledWith(args);
+		});
+
+		it('stores message option as shortMessage and message props', function() {
+			options.shortMessage = 'Omg bad error!';
+
+			const err = new TestError();
+
+			expect(err.shortMessage).to.equal(options.shortMessage);
+			expect(err.message).to.equal(options.shortMessage);
+		});
+
+		it('gets message using ::getDefaultMessage, if none is provided', function() {
+			const defaultMessage = 'default message';
+			const getDefaultMessage = sinon.stub(
+				TestError,
+				'getDefaultMessage',
+			).returns(defaultMessage);
+
+			const err = new TestError();
+
+			expect(getDefaultMessage).to.be.calledOnce;
+			expect(getDefaultMessage).to.be.calledOn(TestError);
+			expect(err.shortMessage).to.equal(defaultMessage);
+			expect(err.message).to.equal(defaultMessage);
+		});
+
+		it('stores cause and chains its message onto original message, if any', function() {
+			options.shortMessage = 'Omg bad error!';
+			options.cause = new Error('Omg bad error!');
+
+			const err = new TestError();
+
+			expect(err.cause).to.equal(options.cause);
+			expect(err.shortMessage).to.equal(options.shortMessage);
+			expect(err.message).to.equal(
+				`${options.shortMessage} : ${options.cause.message}`,
+			);
+		});
+
+		it('supports cause message chained onto default message', function() {
+			const defaultMessage = 'default message';
+			sinon.stub(TestError, 'getDefaultMessage').returns(defaultMessage);
+			options.cause = new Error('Omg bad error!');
+
+			const err = new TestError();
+
+			expect(err.cause).to.equal(options.cause);
+			expect(err.shortMessage).to.equal(defaultMessage);
+			expect(err.message).to.equal(
+				`${defaultMessage} : ${options.cause.message}`,
+			);
+		});
+
+		it('defaults to null cause', function() {
+			expect(new TestError().cause).to.be.null;
+		});
+
+		it('stores provided info', function() {
+			options.info = { foo: 'bar' };
+
+			const err = new TestError();
+
+			expect(err.info).to.equal(options.info);
+		});
+
+		it('defaults to null info', function() {
+			const err = new TestError();
+
+			expect(err.info).to.be.null;
+		});
+
+		it('provides info to ::getDefaultMessage', function() {
+			options.info = { foo: 'bar' };
+			const getDefaultMessage = sinon.spy(TestError, 'getDefaultMessage');
+
+			new TestError(); // eslint-disable-line no-new
+
+			expect(getDefaultMessage).to.be.calledOnce;
+			expect(getDefaultMessage).to.be.calledWith(options.info);
+		});
+
+		it('provides empty object to ::getDefaultMessage, if no info', function() {
+			const getDefaultMessage = sinon.spy(TestError, 'getDefaultMessage');
+
+			new TestError(); // eslint-disable-line no-new
+
+			expect(getDefaultMessage).to.be.calledOnce;
+			expect(getDefaultMessage).to.be.calledWith({});
+		});
+
+		it('supports hideCauseMessage option', function() {
+			options.shortMessage = 'Omg bad error!';
+			options.cause = new Error('Omg bad error!');
+			options.hideCauseMessage = true;
+
+			const err = new TestError();
+
+			expect(err.message).to.equal(options.shortMessage);
+		});
+	});
+
+	describe('@@fullName', function() {
+		const fullName = 'full name';
+
+		beforeEach(function() {
+			(NaniError as any)._fullName = 'superclass full name';
+			sinon.stub(TestError as any, '_getFullName').returns(fullName);
+		});
+
+		afterEach(function() {
+			delete (NaniError as any)._fullName;
+			delete (TestError as any)._fullName;
+		});
+
+		it('sets to own _fullName and returns result of _getFullNane', function() {
+			expect(TestError.fullName).to.equal(fullName);
+			expect((TestError as any)._fullName).to.equal(fullName);
+			expect((TestError as any)._getFullName).to.be.calledOnce;
+			expect((TestError as any)._getFullName).to.be.calledOn(TestError);
+		});
+
+		it('returns own _fullName without calling _getFullName, if it is already set', function() {
+			(TestError as any)._fullName = fullName;
+
+			expect((TestError as any).fullName).to.equal(fullName);
+			expect((TestError as any)._getFullName).to.not.be.called;
+		});
+	});
+
+	describe('::getDefaultMessage', function() {
+		it('returns a generic error message', function() {
+			expect(TestError.getDefaultMessage({})).to.equal(
+				'An error has occurred',
+			);
+		});
+	});
+
+	describe('::_getFullName', function() {
+		it('returns fullname of superclass, with own name appended', function() {
+			sinon.stub(NaniError, 'fullName').get(() => 'full name');
+
+			expect((TestError as any)._getFullName())
+				.to.equal('full name.TestError');
+		});
+
+		it('returns \'Error.NaniError\' for NaniError itelf', function() {
+			expect((NaniError as any)._getFullName())
+				.to.equal('Error.NaniError');
+		});
+	});
+
+	describe('::_normalizeArgs', function() {
+		const shortMessage = 'Omg bad error!';
+		const cause = new Error('Cause of bad error!');
+		const info = { foo: 'bar' };
+
+		it('returns a copy of options object, if it is the first arg', function() {
+			const result = (NaniError as any)
+				._normalizeArgs([ { shortMessage, info } ]);
+
+			expect(result).to.deep.equal({ shortMessage, info });
+		});
+
+		it('supports shortMessage preceding options', function() {
+			const result = (NaniError as any)
+				._normalizeArgs([ shortMessage, { info } ]);
+
+			expect(result).to.deep.equal({ shortMessage, info });
+		});
+
+		it('supports cause preceding options', function() {
+			const result = (NaniError as any)
+				._normalizeArgs([ cause, { info } ]);
+
+			expect(result).to.deep.equal({ cause, info });
+		});
+
+		it('supports shortMessage and cause preceding options', function() {
+			const result = (NaniError as any)._normalizeArgs([
+				shortMessage,
+				cause,
+				{ info },
+			]);
+
+			expect(result).to.deep.equal({ shortMessage, cause, info });
+		});
+
+		it('prioritizes options props over preceding args', function() {
+			const result = (NaniError as any)._normalizeArgs([
+				'foo',
+				new Error('bar'),
+				{ shortMessage, cause, info },
+			]);
+
+			expect(result).to.deep.equal({ shortMessage, cause, info });
+		});
+
+		it('returns an empty object, if no args are provided', function() {
+			const result = (NaniError as any)._normalizeArgs([]);
+
+			expect(result).to.deep.equal({});
+		});
+	});
+
+	describe('@name', function() {
+		it('returns the contructor name', function() {
+			expect(new NaniError().name).to.equal('NaniError');
+			expect(new TestError().name).to.equal('TestError');
+		});
+	});
+
+	describe('@fullName', function() {
+		it('returns the constructor fullName', function() {
+			const fullName = 'full name';
+			sinon.stub(TestError, 'fullName').get(() => fullName);
+
+			expect(new TestError().fullName).to.equal(fullName);
+		});
+	});
+});

@@ -8,8 +8,23 @@ Makes it easier to tell what happened when things explode. :)
 
 ![Screenshot](https://github.com/sripberger/nani/raw/master/nani.png)
 
-Check out the [api docs](https://sripberger.github.io/nani/) or use the
-following guide to get started.
+
+## Recent Changes
+
+### TypeScript Support
+As of `v2.4.0`, Nani has been ported to TypesScript and includes typings for
+all of its API, with documentation comments that should show up with
+intellisense in any supporting editor.
+
+
+### Full API Docs Removed
+Also as of `v2.4.0`, full api docs from the comments are no longer available, as
+building from TypeScript sources is going to require some research,
+configuration, and possible development that I don't have time to do at the
+moment.
+
+Hopefully the following guide will suffice for now. Most of the available API is
+described in detail below.
 
 
 ## The Cause Chain

@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"outDir": "dist",
+		"target": "es2017",
+		"strictNullChecks": true,
+		"sourceMap": true,
+		"removeComments": true
+	},
+	"include": [
+		"lib/**/*",
+		"test/**/*"
+	]
+}

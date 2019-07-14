@@ -1,1 +1,1 @@
-extends: '@sripberger'
+extends: '@batterii/eslint-config-ts'
