@@ -24,7 +24,7 @@ describe('find-internal', function() {
 			normalizePredicate(predicate);
 
 			expect(is).to.be.calledOnce;
-			expect(is).to.be.calledWith(Error, predicate);
+			expect(is).to.be.calledWith(predicate, Error);
 		});
 
 		it('returns predicate, if it is not an Error class', function() {
@@ -54,7 +54,7 @@ describe('find-internal', function() {
 				const result = fn(err);
 
 				expect(isModule.is).to.be.calledOnce;
-				expect(isModule.is).to.be.calledWith(predicate, err);
+				expect(isModule.is).to.be.calledWith(err, predicate);
 				expect(result).to.equal(isResult);
 			});
 		});

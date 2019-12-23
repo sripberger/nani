@@ -18,8 +18,7 @@ import { iterate } from './iterate-external';
 export function normalizePredicate(
 	predicate: ErrorPredicate|Function,
 ): ErrorPredicate {
-	const constructor = predicate as Function;
-	if (is(Error, constructor)) return (cause) => is(constructor, cause);
+	if (is(predicate, Error)) return (cause) => is(cause, predicate);
 	return predicate as ErrorPredicate;
 }
 

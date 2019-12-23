@@ -9,14 +9,17 @@ import { getFullName } from './get-full-name';
  * only if err's fullName starts with sup's fullName. This allows for checking
  * errors against class heirarchies without relying on `instanceof`.
  *
+ * @param err - Error constructor or instance to check. If falsy, this function
+ *   will return false.
  * @param sup - Error constructor to check against.
- * @param err - Error constructor or instance to check. If omitted or falsy,
- *   this function will return `false`.
  * @returns `true` if err fullName starts with sup fullName, `false` otherwise.
  */
-export function is(sup: Function, err?: Error|Function|null): boolean {
-	const supFullName = getFullName(sup);
+export function is(
+	err: Error|Function|null|undefined,
+	sup: Function,
+): boolean {
 	const errFullName = getFullName(err);
+	const supFullName = getFullName(sup);
 	if (!supFullName || !errFullName) return false;
 	return errFullName.startsWith(supFullName);
 }

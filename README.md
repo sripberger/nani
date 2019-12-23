@@ -8,23 +8,35 @@ Makes it easier to tell what happened when things explode. :)
 
 ![Screenshot](https://github.com/sripberger/nani/raw/master/nani.png)
 
-
 ## Recent Changes
+This section will include detailed explanation for only the most recent major or
+minor release. You can view a full changelog [here](./CHANGELOG.md).
 
-### TypeScript Support
-As of `v2.4.0`, Nani has been ported to TypesScript and includes typings for
-all of its API, with documentation comments that should show up with
-intellisense in any supporting editor.
+### `is` Function Signature (BREAKING CHANGE)
+As of `v3.0.0`, the `is` function's positional arguments have been reversed. The
+original signature was chosen because to me, it seemed to read closer to
+English, but it isn't really idiomatic with JS in general and ultimately is more
+likely to confuse people familiar with libraries like `lodash`, which always put
+the primary operand of an operation on the left side. To see if a collection
+includes a value with lodash, for example, you would do this:
 
+```js
+_.includes(collection, value);
+```
 
-### Full API Docs Removed
-Also as of `v2.4.0`, full api docs from the comments are no longer available, as
-building from TypeScript sources is going to require some research,
-configuration, and possible development that I don't have time to do at the
-moment.
+`is` is also intended mostly as a drop-in replacement for the `instanceof`
+operator, so even within the JS standard itself, the original signature is just
+backwards for no good reason. While this might not seem like a big deal, it is
+something that is better changed sooner than later, if it's going to be changed
+at all. As such, I've changed it now, and will be deprecating all versions
+previous to v3.0.0.
 
-Hopefully the following guide will suffice for now. Most of the available API is
-described in detail below.
+Since the package originally published with this name (any 1.x release) is
+something completely different, it's hard to tell based on downloads alone how
+many dependents this change will affect. I don't plan on continuing to add any
+features for the 2.x releases, but if you end up needing one-- and don't want to
+switch all of your `is` usages over just yet-- feel free to file an issue on
+GitHub and I'll take a look.
 
 
 ## The Cause Chain
@@ -930,8 +942,8 @@ property, these will not be supported.
 ### Using Full Names to Identify Errors
 To make easy use of full names for identification, Nani provides the `is`
 function. `is` will get the full name of both of its arguments, and will return
-true if and only if both full names can be identified and the second argument's
-full name *starts with* the first argument's full name. This makes checks
+true if and only if both full names can be identified and the first argument's
+full name *starts with* the second argument's full name. This makes checks
 against your hierarchies read quite naturally.
 
 Going back to our password validation example, you can declare your error
@@ -961,9 +973,9 @@ const { is } = require('nani');
 try {
 	validatePassword(password);
 } catch (err) {
-	if (is(TooShortError, err)) {
+	if (is(err, TooShortError)) {
 		// Handle the too short error.
-	} else if (is(PasswordValidationError, err)) {
+	} else if (is(err, PasswordValidationError)) {
 		// Handle any other kind of password validation error.
 	} else {
 		// Rethrow an unknown error.
@@ -992,11 +1004,11 @@ const err = new NaniError();
 let result;
 
 // These two statements are effectively equivalent:
-result = find(err, (e) => is(NaniError, e));
+result = find(err, (e) => is(e, NaniError));
 result = find(err, NaniError);
 
 // As are these two:
-result = filter(err, (e) => is(NaniError, e));
+result = filter(err, (e) => is(e, NaniError));
 result = filter(err, NaniError);
 ```
 
