@@ -108,8 +108,10 @@ describe('NaniError (Integration)', function() {
 	});
 
 	it('supports default messages based on error info', function() {
-		// Create another subclass that overrides ::getDefaultMessage.
-		// This time, use the `info` argument of that method.
+		/*
+		 * Create another subclass that overrides ::getDefaultMessage.
+		 * This time, use the `info` argument of that method.
+		 */
 		class FooError extends NaniError {
 			static getDefaultMessage(info) {
 				return `Value of foo: ${info.foo}`;

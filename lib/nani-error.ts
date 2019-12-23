@@ -107,7 +107,7 @@ export class NaniError extends Error {
 	 *  if any, or an empty object otherwise. Allows you to easily include
 	 *  values from `options.info` in your default messages.
 	 * @returns The default shortMessage.
- 	 */
+	 */
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	static getDefaultMessage(info: {}): string {
 		return 'An error has occurred';
