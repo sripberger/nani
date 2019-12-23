@@ -32,29 +32,29 @@
 	"main": "dist/lib/index.js",
 	"types": "dist/types/index.d.ts",
 	"devDependencies": {
-		"@batterii/eslint-config-ts": "^1.1.0",
+		"@batterii/eslint-config-ts": "^1.2.1",
 		"@batterii/generator-ts-class": "^0.1.0",
 		"@batterii/generator-ts-module": "^0.1.0",
 		"@batterii/generator-ts-test": "^0.1.0",
-		"@types/chai": "^4.1.7",
-		"@types/lodash": "^4.14.136",
+		"@types/chai": "^4.2.7",
+		"@types/lodash": "^4.14.149",
 		"@types/mocha": "^5.2.7",
-		"@types/node": "^10.14.12",
-		"@types/sinon": "^7.0.13",
-		"@types/sinon-chai": "^3.2.2",
-		"@typescript-eslint/eslint-plugin": "^1.11.0",
-		"@typescript-eslint/parser": "^1.11.0",
+		"@types/node": "^10.17.12",
+		"@types/sinon": "^7.5.1",
+		"@types/sinon-chai": "^3.2.3",
+		"@typescript-eslint/eslint-plugin": "^1.13.0",
+		"@typescript-eslint/parser": "^1.13.0",
 		"chai": "^4.2.0",
 		"eslint": "^5.16.0",
-		"mocha": "^6.1.4",
-		"sinon": "^7.3.2",
+		"mocha": "^6.2.2",
+		"sinon": "^7.5.0",
 		"sinon-chai": "^3.3.0",
-		"source-map-support": "^0.5.12",
-		"ts-node": "^8.3.0",
+		"source-map-support": "^0.5.16",
+		"ts-node": "^8.5.4",
 		"typescript": "3.4.5",
 		"yo": "^2.0.6"
 	},
 	"dependencies": {
-		"lodash": "^4.17.14"
+		"lodash": "^4.17.15"
 	}
 }
