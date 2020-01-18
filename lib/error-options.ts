@@ -22,7 +22,7 @@ export interface ErrorOptions {
 	/**
 	 * Additional arbitrary data about the error.
 	 */
-	info?: {};
+	info?: Record<string, any>;
 
 	/**
 	 * Set true to omit cause messages from the error's message.

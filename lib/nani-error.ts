@@ -27,7 +27,7 @@ export class NaniError extends Error {
 	/**
 	 * Additional arbitary data about the error.
 	 */
-	info: {} | null;
+	info: Record<string, any> | null;
 
 	/**
 	 * Constructs a NaniError.
@@ -109,7 +109,7 @@ export class NaniError extends Error {
 	 * @returns The default shortMessage.
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	static getDefaultMessage(info: {}): string {
+	static getDefaultMessage(info: Record<string, any>): string {
 		return 'An error has occurred';
 	}
 

@@ -12,7 +12,7 @@ import { iterate } from './iterate-external';
  * @param err - Error instance from which to fetch info.
  * @returns A plain object containing all info properties.
  */
-export function collapseInfo(err: Error): {} {
+export function collapseInfo(err: Error): Record<string, any> {
 	const result = {};
 	for (const e of iterate(err)) {
 		defaults(result, (e as any).info);
