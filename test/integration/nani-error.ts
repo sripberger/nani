@@ -172,4 +172,22 @@ describe('NaniError (Integration)', function() {
 		expect(barErr.fullName).to.equal('Error.NaniError.BarError');
 		expect(bazErr.fullName).to.equal('Error.NaniError.FooError.BazError');
 	});
+
+	it('supports class-level error message prefixes', function() {
+		class FooError extends NaniError {
+			static prefix = 'Foo Prefix';
+		}
+
+		// Try with no cause chain.
+		let err = new FooError(shortMessage);
+		expect(err.message).to.equal('Foo Prefix : Omg bad error!');
+		expect(err.shortMessage).to.equal(shortMessage);
+
+		// Try again with a cause chain.
+		err = new FooError(shortMessage, cause);
+		expect(err.message).to.equal(
+			'Foo Prefix : Omg bad error! : Cause of bad error',
+		);
+		expect(err.shortMessage).to.equal(shortMessage);
+	});
 });

@@ -5,6 +5,10 @@ import { expect } from 'chai';
 
 class TestError extends NaniError {}
 
+class PrefixedTestError extends TestError {
+	static prefix = 'Some prefix';
+}
+
 describe('NaniError', function() {
 	it('extends Error', function() {
 		expect(new TestError()).to.be.an.instanceof(Error);
@@ -128,6 +132,27 @@ describe('NaniError', function() {
 			const err = new TestError();
 
 			expect(err.message).to.equal(options.shortMessage);
+		});
+
+		it('prepends the prefix to the message, if any', function() {
+			options.shortMessage = 'Omg bad error!';
+
+			const err = new PrefixedTestError();
+
+			expect(err.message).to.equal('Some prefix : Omg bad error!');
+			expect(err.shortMessage).to.equal(options.shortMessage);
+		});
+
+		it('supports both prefixes and cause chains at once', function() {
+			options.shortMessage = 'Omg bad error!';
+			options.cause = new Error('Cause of error');
+
+			const err = new PrefixedTestError();
+
+			expect(err.message).to.equal(
+				'Some prefix : Omg bad error! : Cause of error',
+			);
+			expect(err.shortMessage).to.equal(options.shortMessage);
 		});
 	});
 

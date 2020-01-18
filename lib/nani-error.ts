@@ -10,6 +10,19 @@ import { ErrorOptions } from './error-options';
  */
 export class NaniError extends Error {
 	/**
+	 * A string to prepend to error messages.
+	 *
+	 * @remarks
+	 * The prefix will be separated from the rest of the message with spaces and
+	 * a colon, the same way causes are separated in a cause chain.
+	 *
+	 * Seting this will affect messages for all errors of the relevant type,
+	 * both in their own message properties and within the cause chanis of
+	 * other errors. It will *not* affect shortMessage properties, however.
+	 */
+	static prefix?: string;
+
+	/**
 	 * Cached value of the fullName property to prevent recalcuation.
 	 */
 	private static _fullName: string;
@@ -73,11 +86,20 @@ export class NaniError extends Error {
 				.getDefaultMessage(info);
 		}
 
+		// Apply the prefix, if any.
+		let message: string;
+		const { prefix } = this.constructor as typeof NaniError;
+		if (prefix) {
+			message = `${prefix} : ${this.shortMessage}`;
+		} else {
+			message = this.shortMessage;
+		}
+
 		// Compute and set the full message.
 		if (this.cause && !options.hideCauseMessage) {
-			this.message = `${this.shortMessage} : ${this.cause.message}`;
+			this.message = `${message} : ${this.cause.message}`;
 		} else {
-			this.message = this.shortMessage;
+			this.message = message;
 		}
 	}
 

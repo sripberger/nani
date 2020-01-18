@@ -10,7 +10,15 @@ Makes it easier to tell what happened when things explode. :)
 
 ## Recent Changes
 This section will include detailed explanation for only the most recent major or
-minor release. You can view a full changelog [here](./CHANGELOG.md).
+minor releases. You can view a full changelog [here](./CHANGELOG.md).
+
+### Static `prefix` property
+As ov `v3.1.0`, you can specify a static `prefix` property on your error
+classes. This string will be prepended to the full messages of all errors of
+that type. It will not affect the `shortMessage` property, however.
+
+The prefix, if present, is separated from the short message the same way cause
+messages are separated from one another, with a colon surrounded by spaces.
 
 ### `is` Function Signature (BREAKING CHANGE)
 As of `v3.0.0`, the `is` function's positional arguments have been reversed. The
