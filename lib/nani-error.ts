@@ -43,6 +43,12 @@ export class NaniError extends Error {
 	info: Record<string, any> | null;
 
 	/**
+	 * True if the constructor was not provided with a short message. False
+	 * otherwise. Useful for unit testing of thrown errors.
+	 */
+	usedDefaultMessage: boolean;
+
+	/**
 	 * Constructs a NaniError.
 	 * @param options - Error options.
 	 */
@@ -79,11 +85,20 @@ export class NaniError extends Error {
 		this.cause = options.cause || null;
 		this.info = options.info || null;
 
-		// Get the default short message, if none was provided.
-		if (!this.shortMessage) {
+		if (this.shortMessage) {
+			/*
+			 * Set usedDefaultMessage to false, since a shortMessage was
+			 * provided to the constructor.
+			 */
+			this.usedDefaultMessage = false;
+		} else {
+			// Get short message from the ::getDefaultMessage method.
 			const info = this.info || {};
-			this.shortMessage = (this.constructor as any)
+			this.shortMessage = (this.constructor as typeof NaniError)
 				.getDefaultMessage(info);
+
+			// Set usedDefaultMessage to true.
+			this.usedDefaultMessage = true;
 		}
 
 		// Apply the prefix, if any.

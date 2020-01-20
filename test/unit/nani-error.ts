@@ -107,6 +107,14 @@ describe('NaniError', function() {
 			expect(err.shortMessage).to.equal(options.shortMessage);
 		});
 
+		it('sets usedDefaultMessage to false if there is a provided shortMessage', function() {
+			options.shortMessage = 'Omg bad error!';
+
+			const err = new TestError();
+
+			expect(err.usedDefaultMessage).to.be.false;
+		});
+
 		context('no short message is provided', function() {
 			const defaultMessage = 'default message';
 			let getDefaultMessage: sinon.SinonStub;
@@ -123,6 +131,12 @@ describe('NaniError', function() {
 				expect(getDefaultMessage).to.be.calledOn(TestError);
 				expect(err.shortMessage).to.equal(defaultMessage);
 				expect(err.message).to.equal(defaultMessage);
+			});
+
+			it('sets the usedDefaultMessage property to true', function() {
+				const err = new TestError();
+
+				expect(err);
 			});
 
 			it('supports cause message chained onto the default message', function() {
