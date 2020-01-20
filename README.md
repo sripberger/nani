@@ -12,8 +12,15 @@ Makes it easier to tell what happened when things explode. :)
 This section will include detailed explanation for only the most recent major or
 minor releases. You can view a full changelog [here](./CHANGELOG.md).
 
+### `usedDefaultMessage` property
+As of `v3.2.0`, the `NaniError` constructor sets the `usedDefaultMessage`
+property, depending on whether or not a shortMessage was provided to it. This
+is intended to be used for unit testing, allowing you to easily write tests that
+ensure an error was thrown with a default message, without actually caring what
+the default message *is*.
+
 ### Static `prefix` property
-As ov `v3.1.0`, you can specify a static `prefix` property on your error
+As of `v3.1.0`, you can specify a static `prefix` property on your error
 classes. This string will be prepended to the full messages of all errors of
 that type. It will not affect the `shortMessage` property, however.
 
