@@ -45,21 +45,6 @@ describe('NaniError', function() {
 			expect(err.message).to.equal(options.shortMessage);
 		});
 
-		it('gets message using ::getDefaultMessage, if none is provided', function() {
-			const defaultMessage = 'default message';
-			const getDefaultMessage = sinon.stub(
-				TestError,
-				'getDefaultMessage',
-			).returns(defaultMessage);
-
-			const err = new TestError();
-
-			expect(getDefaultMessage).to.be.calledOnce;
-			expect(getDefaultMessage).to.be.calledOn(TestError);
-			expect(err.shortMessage).to.equal(defaultMessage);
-			expect(err.message).to.equal(defaultMessage);
-		});
-
 		it('stores cause and chains its message onto original message, if any', function() {
 			options.shortMessage = 'Omg bad error!';
 			options.cause = new Error('Omg bad error!');
@@ -70,20 +55,6 @@ describe('NaniError', function() {
 			expect(err.shortMessage).to.equal(options.shortMessage);
 			expect(err.message).to.equal(
 				`${options.shortMessage} : ${options.cause.message}`,
-			);
-		});
-
-		it('supports cause message chained onto default message', function() {
-			const defaultMessage = 'default message';
-			sinon.stub(TestError, 'getDefaultMessage').returns(defaultMessage);
-			options.cause = new Error('Omg bad error!');
-
-			const err = new TestError();
-
-			expect(err.cause).to.equal(options.cause);
-			expect(err.shortMessage).to.equal(defaultMessage);
-			expect(err.message).to.equal(
-				`${defaultMessage} : ${options.cause.message}`,
 			);
 		});
 
@@ -103,25 +74,6 @@ describe('NaniError', function() {
 			const err = new TestError();
 
 			expect(err.info).to.be.null;
-		});
-
-		it('provides info to ::getDefaultMessage', function() {
-			options.info = { foo: 'bar' };
-			const getDefaultMessage = sinon.spy(TestError, 'getDefaultMessage');
-
-			new TestError(); // eslint-disable-line no-new
-
-			expect(getDefaultMessage).to.be.calledOnce;
-			expect(getDefaultMessage).to.be.calledWith(options.info);
-		});
-
-		it('provides empty object to ::getDefaultMessage, if no info', function() {
-			const getDefaultMessage = sinon.spy(TestError, 'getDefaultMessage');
-
-			new TestError(); // eslint-disable-line no-new
-
-			expect(getDefaultMessage).to.be.calledOnce;
-			expect(getDefaultMessage).to.be.calledWith({});
 		});
 
 		it('supports hideCauseMessage option', function() {
@@ -153,6 +105,53 @@ describe('NaniError', function() {
 				'Some prefix : Omg bad error! : Cause of error',
 			);
 			expect(err.shortMessage).to.equal(options.shortMessage);
+		});
+
+		context('no short message is provided', function() {
+			const defaultMessage = 'default message';
+			let getDefaultMessage: sinon.SinonStub;
+
+			beforeEach(function() {
+				getDefaultMessage = sinon.stub(TestError, 'getDefaultMessage')
+					.returns(defaultMessage);
+			});
+
+			it('gets the short message using ::getDefaultMessage', function() {
+				const err = new TestError();
+
+				expect(getDefaultMessage).to.be.calledOnce;
+				expect(getDefaultMessage).to.be.calledOn(TestError);
+				expect(err.shortMessage).to.equal(defaultMessage);
+				expect(err.message).to.equal(defaultMessage);
+			});
+
+			it('supports cause message chained onto the default message', function() {
+				options.cause = new Error('Omg bad error!');
+
+				const err = new TestError();
+
+				expect(err.cause).to.equal(options.cause);
+				expect(err.shortMessage).to.equal(defaultMessage);
+				expect(err.message).to.equal(
+					`${defaultMessage} : ${options.cause.message}`,
+				);
+			});
+
+			it('provides info to ::getDefaultMessage, if any', function() {
+				options.info = { foo: 'bar' };
+
+				new TestError(); // eslint-disable-line no-new
+
+				expect(getDefaultMessage).to.be.calledOnce;
+				expect(getDefaultMessage).to.be.calledWith(options.info);
+			});
+
+			it('provides empty object to ::getDefaultMessage, if no info', function() {
+				new TestError(); // eslint-disable-line no-new
+
+				expect(getDefaultMessage).to.be.calledOnce;
+				expect(getDefaultMessage).to.be.calledWith({});
+			});
 		});
 	});
 
