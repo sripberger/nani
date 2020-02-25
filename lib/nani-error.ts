@@ -126,7 +126,7 @@ export class NaniError extends Error {
 	 * critical to nani's mechanism for checking against error name heirarchies.
 	 */
 	static get fullName(): string {
-		if (!this.hasOwnProperty('_fullName')) {
+		if (!Object.prototype.hasOwnProperty.call(this, '_fullName')) {
 			this._fullName = this._getFullName();
 		}
 		return this._fullName;

@@ -19,7 +19,7 @@ import { IterItem } from './iter-item';
 export function *iterateInternal(
 	err: Error,
 	parent: Error|null = null,
-	inArray: boolean = false,
+	inArray = false,
 	seen: Set<Error> = new Set<Error>(),
 ): IterableIterator<IterItem> {
 	// If we've already encountered this error along this chain, yield nothing.
