@@ -1,3 +1,4 @@
+import {ErrorConstructor} from "./error-constructor";
 import {ErrorPredicate} from "./error-predicate";
 import {is} from "./is";
 import {iterate} from "./iterate-external";
@@ -16,9 +17,11 @@ import {iterate} from "./iterate-external";
  * @returns Normalized predicate function.
  */
 export function normalizePredicate(
-	predicate: ErrorPredicate|Function,
+	predicate: ErrorPredicate|ErrorConstructor,
 ): ErrorPredicate {
-	if (is(predicate, Error)) return cause => is(cause, predicate);
+	if (is(predicate as ErrorConstructor, Error)) {
+		return cause => is(cause, predicate as ErrorConstructor);
+	}
 	return predicate as ErrorPredicate;
 }
 
