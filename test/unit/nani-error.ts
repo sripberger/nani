@@ -16,11 +16,11 @@ describe("NaniError", function() {
 
 	describe("constructor", function() {
 		let options: ErrorOptions;
-		let _normalizeArgs: sinon.SinonStub;
+		let normalizeArgs: sinon.SinonStub;
 
 		beforeEach(function() {
 			options = {};
-			_normalizeArgs = sinon.stub(
+			normalizeArgs = sinon.stub(
 				TestError as any,
 				"_normalizeArgs",
 			).returns(options);
@@ -32,8 +32,8 @@ describe("NaniError", function() {
 			// eslint-disable-next-line no-new
 			new TestError(...args);
 
-			expect(_normalizeArgs).to.be.calledOnce;
-			expect(_normalizeArgs).to.be.calledWith(args);
+			expect(normalizeArgs).to.be.calledOnce;
+			expect(normalizeArgs).to.be.calledWith(args);
 		});
 
 		it("stores message option as shortMessage and message props", function() {
