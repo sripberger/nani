@@ -1,4 +1,4 @@
-import { getFullName } from './get-full-name';
+import {getFullName} from "./get-full-name";
 
 /**
  * Check if an error instance or constructor falls under another error

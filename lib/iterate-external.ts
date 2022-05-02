@@ -1,6 +1,6 @@
-import { IterItem } from './iter-item';
-import { Iterator } from './iterator';
-import { iterateInternal } from './iterate-internal';
+import {IterItem} from "./iter-item";
+import {Iterator} from "./iterator";
+import {iterateInternal} from "./iterate-internal";
 
 /**
  * A generator function for iterating through an error and all of its causes.

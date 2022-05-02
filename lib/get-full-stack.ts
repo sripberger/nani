@@ -6,6 +6,6 @@
  * @returns Full error stack.
  */
 export function getFullStack(err: Error): string {
-	const { cause, stack } = err as any;
+	const {cause, stack} = err as any;
 	return cause ? `${stack}\nCaused by: ${getFullStack(cause)}` : stack;
 }

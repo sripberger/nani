@@ -1,10 +1,10 @@
-import * as findInternal from '../../lib/find-internal';
-import * as sinon from 'sinon';
-import { filter, find } from '../../lib/find-external';
-import { expect } from 'chai';
+import * as findInternal from "../../lib/find-internal";
+import * as sinon from "sinon";
+import {filter, find} from "../../lib/find-external";
+import {expect} from "chai";
 
-describe('find-external', function() {
-	const err = new Error('err');
+describe("find-external", function() {
+	const err = new Error("err");
 	const predicate = () => false;
 	const normalized = () => false;
 	let normalizePredicate: sinon.SinonStub;
@@ -12,16 +12,16 @@ describe('find-external', function() {
 	beforeEach(function() {
 		normalizePredicate = sinon.stub(
 			findInternal,
-			'normalizePredicate',
+			"normalizePredicate",
 		).returns(normalized);
 	});
 
-	describe('find', function() {
-		it('finds cause in error by normalized predicate', function() {
-			const cause = new Error('err cause');
+	describe("find", function() {
+		it("finds cause in error by normalized predicate", function() {
+			const cause = new Error("err cause");
 			const findByPredicate = sinon.stub(
 				findInternal,
-				'findByPredicate',
+				"findByPredicate",
 			).returns(cause);
 
 			const result = find(err, predicate);
@@ -34,12 +34,12 @@ describe('find-external', function() {
 		});
 	});
 
-	describe('filter', function() {
-		it('filters causes of error by normalized predicate', function() {
-			const causes = [ new Error('foo'), new Error('bar') ];
+	describe("filter", function() {
+		it("filters causes of error by normalized predicate", function() {
+			const causes = [new Error("foo"), new Error("bar")];
 			const filterByPredicate = sinon.stub(
 				findInternal,
-				'filterByPredicate',
+				"filterByPredicate",
 			).returns(causes);
 
 			const result = filter(err, predicate);

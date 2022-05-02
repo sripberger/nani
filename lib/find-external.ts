@@ -2,9 +2,9 @@ import {
 	filterByPredicate,
 	findByPredicate,
 	normalizePredicate,
-} from './find-internal';
+} from "./find-internal";
 
-import { ErrorPredicate } from './error-predicate';
+import {ErrorPredicate} from "./error-predicate";
 
 /**
  * Find the first error in the cause chain matching a given predicate or Error

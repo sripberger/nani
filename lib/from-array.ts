@@ -1,4 +1,4 @@
-import { MultiError } from './multi-error';
+import {MultiError} from "./multi-error";
 
 /**
  * Converts an array of errors into a single error, wrapping it with a

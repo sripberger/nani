@@ -1,5 +1,5 @@
-import { defaults } from 'lodash';
-import { iterate } from './iterate-external';
+import {defaults} from "lodash";
+import {iterate} from "./iterate-external";
 
 /**
  * Collapse all info properties into a single object.

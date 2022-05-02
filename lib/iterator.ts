@@ -1,4 +1,4 @@
-import { iterateInternal } from './iterate-internal';
+import {iterateInternal} from "./iterate-internal";
 
 /**
  * Internal class that tracks state for the external `iterate` function.
@@ -23,7 +23,7 @@ export class Iterator {
 	 * @param err - Error instance to iterate.
 	 */
 	*iterate(err: Error): IterableIterator<Error> {
-		for (const { err: e } of iterateInternal(err)) {
+		for (const {err: e} of iterateInternal(err)) {
 			if (this.seenErrors.has(e)) continue;
 			this.seenErrors.add(e);
 			yield e;

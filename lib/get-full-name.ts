@@ -16,7 +16,7 @@
 export function getFullName(err?: Error|Function|null): string|null {
 	if (!err) return null;
 	if ((err as any).fullName) return (err as any).fullName;
-	if (err.name === 'Error') return err.name;
-	if (err.name && err.name.endsWith('Error')) return `Error.${err.name}`;
+	if (err.name === "Error") return err.name;
+	if (err.name && err.name.endsWith("Error")) return `Error.${err.name}`;
 	return null;
 }

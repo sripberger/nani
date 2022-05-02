@@ -1,6 +1,6 @@
-import { ErrorPredicate } from './error-predicate';
-import { is } from './is';
-import { iterate } from './iterate-external';
+import {ErrorPredicate} from "./error-predicate";
+import {is} from "./is";
+import {iterate} from "./iterate-external";
 
 /**
  * Normalizes an ErrorPredicate or Error constructor to an ErrorPredicate.
@@ -18,7 +18,7 @@ import { iterate } from './iterate-external';
 export function normalizePredicate(
 	predicate: ErrorPredicate|Function,
 ): ErrorPredicate {
-	if (is(predicate, Error)) return (cause) => is(cause, predicate);
+	if (is(predicate, Error)) return cause => is(cause, predicate);
 	return predicate as ErrorPredicate;
 }
 

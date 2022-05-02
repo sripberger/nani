@@ -1,13 +1,13 @@
-import { NaniError } from '../../lib';
-import { expect } from 'chai';
+import {NaniError} from "../../lib";
+import {expect} from "chai";
 
-describe('NaniError (Integration)', function() {
-	const shortMessage = 'Omg bad error!';
-	const cause = new Error('Cause of bad error');
+describe("NaniError (Integration)", function() {
+	const shortMessage = "Omg bad error!";
+	const cause = new Error("Cause of bad error");
 
-	it('supports error messages, using default if omitted', function() {
+	it("supports error messages, using default if omitted", function() {
 		// Create with options object.
-		let err = new NaniError({ shortMessage });
+		let err = new NaniError({shortMessage});
 		expect(err).to.be.an.instanceof(Error);
 		expect(err.message).to.equal(shortMessage);
 
@@ -19,12 +19,12 @@ describe('NaniError (Integration)', function() {
 		// Check the default error message
 		err = new NaniError();
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal('An error has occurred');
+		expect(err.message).to.equal("An error has occurred");
 	});
 
-	it('supports overriding of the default message', function() {
+	it("supports overriding of the default message", function() {
 		// Create a subclass that overrides ::getDefaultMessage.
-		const defaultMessage = 'some other default message';
+		const defaultMessage = "some other default message";
 		class FooError extends NaniError {
 			static getDefaultMessage() {
 				return defaultMessage;
@@ -35,9 +35,9 @@ describe('NaniError (Integration)', function() {
 		expect(new FooError().message).to.equal(defaultMessage);
 	});
 
-	it('supports cause message chaining', function() {
+	it("supports cause message chaining", function() {
 		// Create with options object.
-		let err = new NaniError({ shortMessage, cause });
+		let err = new NaniError({shortMessage, cause});
 		expect(err).to.be.an.instanceof(Error);
 		expect(err.message).to.equal(`${shortMessage} : ${cause.message}`);
 		expect(err.shortMessage).to.equal(shortMessage);
@@ -56,11 +56,11 @@ describe('NaniError (Integration)', function() {
 		expect(err.message).to.equal(
 			`An error has occurred : ${cause.message}`,
 		);
-		expect(err.shortMessage).to.equal('An error has occurred');
+		expect(err.shortMessage).to.equal("An error has occurred");
 		expect(err.cause).to.equal(cause);
 	});
 
-	it('supports disabling of cause message chaining', function() {
+	it("supports disabling of cause message chaining", function() {
 		// Create with options object.
 		let err = new NaniError({
 			shortMessage,
@@ -73,41 +73,41 @@ describe('NaniError (Integration)', function() {
 		expect(err.cause).to.equal(cause);
 
 		// Try again with shorthand signature.
-		err = new NaniError(shortMessage, cause, { hideCauseMessage: true });
+		err = new NaniError(shortMessage, cause, {hideCauseMessage: true});
 		expect(err).to.be.an.instanceof(Error);
 		expect(err.message).to.equal(shortMessage);
 		expect(err.shortMessage).to.equal(shortMessage);
 		expect(err.cause).to.equal(cause);
 
 		// Try again with default message.
-		err = new NaniError(cause, { hideCauseMessage: true });
+		err = new NaniError(cause, {hideCauseMessage: true});
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal('An error has occurred');
-		expect(err.shortMessage).to.equal('An error has occurred');
+		expect(err.message).to.equal("An error has occurred");
+		expect(err.shortMessage).to.equal("An error has occurred");
 		expect(err.cause).to.equal(cause);
 	});
 
-	it('supports error info', function() {
+	it("supports error info", function() {
 		// Create with options object.
-		let err = new NaniError({ shortMessage, info: { foo: 'bar' } });
+		let err = new NaniError({shortMessage, info: {foo: "bar"}});
 		expect(err).to.be.an.instanceof(Error);
 		expect(err.message).to.equal(shortMessage);
-		expect(err.info).to.deep.equal({ foo: 'bar' });
+		expect(err.info).to.deep.equal({foo: "bar"});
 
 		// Try again with shorthand signature.
-		err = new NaniError(shortMessage, { info: { foo: 'bar' } });
+		err = new NaniError(shortMessage, {info: {foo: "bar"}});
 		expect(err).to.be.an.instanceof(Error);
 		expect(err.message).to.equal(shortMessage);
-		expect(err.info).to.deep.equal({ foo: 'bar' });
+		expect(err.info).to.deep.equal({foo: "bar"});
 
 		// Try again with default message..
-		err = new NaniError({ info: { foo: 'bar' } });
+		err = new NaniError({info: {foo: "bar"}});
 		expect(err).to.be.an.instanceof(Error);
-		expect(err.message).to.equal('An error has occurred');
-		expect(err.info).to.deep.equal({ foo: 'bar' });
+		expect(err.message).to.equal("An error has occurred");
+		expect(err.info).to.deep.equal({foo: "bar"});
 	});
 
-	it('supports default messages based on error info', function() {
+	it("supports default messages based on error info", function() {
 		/*
 		 * Create another subclass that overrides ::getDefaultMessage.
 		 * This time, use the `info` argument of that method.
@@ -119,40 +119,40 @@ describe('NaniError (Integration)', function() {
 		}
 
 		// Make sure it works.
-		let err = new FooError({ info: { foo: 'bar' } });
-		expect(err.message).to.equal('Value of foo: bar');
+		let err = new FooError({info: {foo: "bar"}});
+		expect(err.message).to.equal("Value of foo: bar");
 
 		// Try with some other info value.
-		err = new FooError({ info: { foo: 'baz' } });
-		expect(err.message).to.equal('Value of foo: baz');
+		err = new FooError({info: {foo: "baz"}});
+		expect(err.message).to.equal("Value of foo: baz");
 
 		// Try with a cause chain.
-		err = new FooError(cause, { info: { foo: 'qux' } });
+		err = new FooError(cause, {info: {foo: "qux"}});
 		expect(err.message).to.equal(`Value of foo: qux : ${cause.message}`);
-		expect(err.shortMessage).to.equal('Value of foo: qux');
+		expect(err.shortMessage).to.equal("Value of foo: qux");
 
 		// Try with no info.
 		err = new FooError();
-		expect(err.message).to.equal('Value of foo: undefined');
+		expect(err.message).to.equal("Value of foo: undefined");
 	});
 
-	it('supports name and fullName properties in subclasses', function() {
+	it("supports name and fullName properties in subclasses", function() {
 		// Make some subclasses.
 		class FooError extends NaniError {}
 		class BarError extends NaniError {}
 		class BazError extends FooError {}
 
 		// Check constructor names.
-		expect(NaniError.name).to.equal('NaniError');
-		expect(FooError.name).to.equal('FooError');
-		expect(BarError.name).to.equal('BarError');
-		expect(BazError.name).to.equal('BazError');
+		expect(NaniError.name).to.equal("NaniError");
+		expect(FooError.name).to.equal("FooError");
+		expect(BarError.name).to.equal("BarError");
+		expect(BazError.name).to.equal("BazError");
 
 		// Check constructor full names.
-		expect(NaniError.fullName).to.equal('Error.NaniError');
-		expect(FooError.fullName).to.equal('Error.NaniError.FooError');
-		expect(BarError.fullName).to.equal('Error.NaniError.BarError');
-		expect(BazError.fullName).to.equal('Error.NaniError.FooError.BazError');
+		expect(NaniError.fullName).to.equal("Error.NaniError");
+		expect(FooError.fullName).to.equal("Error.NaniError.FooError");
+		expect(BarError.fullName).to.equal("Error.NaniError.BarError");
+		expect(BazError.fullName).to.equal("Error.NaniError.FooError.BazError");
 
 		// create some instances.
 		const naniErr = new NaniError();
@@ -161,32 +161,32 @@ describe('NaniError (Integration)', function() {
 		const bazErr = new BazError();
 
 		// Check instance names.
-		expect(naniErr.name).to.equal('NaniError');
-		expect(fooErr.name).to.equal('FooError');
-		expect(barErr.name).to.equal('BarError');
-		expect(bazErr.name).to.equal('BazError');
+		expect(naniErr.name).to.equal("NaniError");
+		expect(fooErr.name).to.equal("FooError");
+		expect(barErr.name).to.equal("BarError");
+		expect(bazErr.name).to.equal("BazError");
 
 		// Check instance full names.
-		expect(naniErr.fullName).to.equal('Error.NaniError');
-		expect(fooErr.fullName).to.equal('Error.NaniError.FooError');
-		expect(barErr.fullName).to.equal('Error.NaniError.BarError');
-		expect(bazErr.fullName).to.equal('Error.NaniError.FooError.BazError');
+		expect(naniErr.fullName).to.equal("Error.NaniError");
+		expect(fooErr.fullName).to.equal("Error.NaniError.FooError");
+		expect(barErr.fullName).to.equal("Error.NaniError.BarError");
+		expect(bazErr.fullName).to.equal("Error.NaniError.FooError.BazError");
 	});
 
-	it('supports class-level error message prefixes', function() {
+	it("supports class-level error message prefixes", function() {
 		class FooError extends NaniError {
-			static prefix = 'Foo Prefix';
+			static prefix = "Foo Prefix";
 		}
 
 		// Try with no cause chain.
 		let err = new FooError(shortMessage);
-		expect(err.message).to.equal('Foo Prefix : Omg bad error!');
+		expect(err.message).to.equal("Foo Prefix : Omg bad error!");
 		expect(err.shortMessage).to.equal(shortMessage);
 
 		// Try again with a cause chain.
 		err = new FooError(shortMessage, cause);
 		expect(err.message).to.equal(
-			'Foo Prefix : Omg bad error! : Cause of bad error',
+			"Foo Prefix : Omg bad error! : Cause of bad error",
 		);
 		expect(err.shortMessage).to.equal(shortMessage);
 	});

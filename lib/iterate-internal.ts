@@ -1,4 +1,4 @@
-import { IterItem } from './iter-item';
+import {IterItem} from "./iter-item";
 
 /**
  * Internal resursive iteration utility.
@@ -29,10 +29,10 @@ export function *iterateInternal(
 	seen = new Set(seen).add(err);
 
 	// Yield this error first.
-	yield { err, parent, inArray };
+	yield {err, parent, inArray};
 
 	// Move down into child errors.
-	const { errors, cause } = err as any;
+	const {errors, cause} = err as any;
 	if (errors) {
 		// Proceed through each item in the errors array.
 		for (const e of errors) yield* iterateInternal(e, err, true, seen);

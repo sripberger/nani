@@ -1,5 +1,5 @@
-import { NaniError } from './nani-error';
-import { isArray } from 'lodash';
+import {NaniError} from "./nani-error";
+import {isArray} from "lodash";
 
 /**
  * Error class for representing a group of errors.
@@ -40,7 +40,7 @@ export class MultiError extends NaniError {
 		const errors = isArray(args[0]) ? args[0] : args;
 
 		// The first error is treated as the cause.
-		const [ cause ] = errors;
+		const [cause] = errors;
 
 		// Determine the initial short message.
 		let shortMessage: string;
@@ -49,11 +49,11 @@ export class MultiError extends NaniError {
 			shortMessage = `First of ${errors.length} errors`;
 		} else {
 			// Fallback for empty instances.
-			shortMessage = 'Empty MultiError';
+			shortMessage = "Empty MultiError";
 		}
 
 		// Create the instance.
-		super({ shortMessage, cause });
+		super({shortMessage, cause});
 
 		// Set the errors property.
 		this.errors = errors;

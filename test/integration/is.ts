@@ -1,13 +1,13 @@
-import { NaniError, is } from '../../lib';
-import { expect } from 'chai';
+import {NaniError, is} from "../../lib";
+import {expect} from "chai";
 
 // Some simple subclasses for testing purposes...
 class FooError extends NaniError {}
 class BarError extends NaniError {}
 class BazError extends FooError {}
 
-describe('is (Integration)', function() {
-	it('supports checking against NaniError heirarchies', function() {
+describe("is (Integration)", function() {
+	it("supports checking against NaniError heirarchies", function() {
 		// Check a NaniError
 		let err = new NaniError();
 		expect(is(err, Error)).to.be.true;
@@ -65,7 +65,7 @@ describe('is (Integration)', function() {
 		expect(is(err, BazError)).to.be.true;
 	});
 
-	it('supports checking of standard JS errors', function() {
+	it("supports checking of standard JS errors", function() {
 		// Check a plain Error
 		let err = new Error();
 		expect(is(err, Error)).to.be.true;
@@ -165,7 +165,7 @@ describe('is (Integration)', function() {
 		expect(is(err, BazError)).to.be.false;
 	});
 
-	it('supports checking undefined and null', function() {
+	it("supports checking undefined and null", function() {
 		// Check undefined
 		expect(is(undefined, Error)).to.be.false;
 		expect(is(undefined, EvalError)).to.be.false;

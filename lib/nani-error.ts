@@ -1,5 +1,5 @@
-import { assign, isString } from 'lodash';
-import { ErrorOptions } from './error-options';
+import {assign, isString} from "lodash";
+import {ErrorOptions} from "./error-options";
 
 /**
  * A base class to use as a replacement for the standard Error class.
@@ -103,7 +103,7 @@ export class NaniError extends Error {
 
 		// Apply the prefix, if any.
 		let message: string;
-		const { prefix } = this.constructor as typeof NaniError;
+		const {prefix} = this.constructor as typeof NaniError;
 		if (prefix) {
 			message = `${prefix} : ${this.shortMessage}`;
 		} else {
@@ -126,7 +126,7 @@ export class NaniError extends Error {
 	 * critical to nani's mechanism for checking against error name heirarchies.
 	 */
 	static get fullName(): string {
-		if (!Object.prototype.hasOwnProperty.call(this, '_fullName')) {
+		if (!Object.prototype.hasOwnProperty.call(this, "_fullName")) {
 			this._fullName = this._getFullName();
 		}
 		return this._fullName;
@@ -147,7 +147,7 @@ export class NaniError extends Error {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	static getDefaultMessage(info: Record<string, any>): string {
-		return 'An error has occurred';
+		return "An error has occurred";
 	}
 
 	/**
