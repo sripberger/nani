@@ -1,4 +1,3 @@
-import {ErrorConstructor} from "./error-constructor";
 import {getFullName} from "./get-full-name";
 
 /**
@@ -16,8 +15,8 @@ import {getFullName} from "./get-full-name";
  * @returns `true` if err fullName starts with sup fullName, `false` otherwise.
  */
 export function is(
-	err: Error|ErrorConstructor|null|undefined,
-	sup: ErrorConstructor,
+	err: Error|Function|null|undefined,
+	sup: Function,
 ): boolean {
 	const errFullName = getFullName(err);
 	const supFullName = getFullName(sup);

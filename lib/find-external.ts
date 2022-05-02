@@ -3,7 +3,7 @@ import {
 	findByPredicate,
 	normalizePredicate,
 } from "./find-internal";
-import {ErrorConstructor} from "./error-constructor";
+
 import {ErrorPredicate} from "./error-predicate";
 
 /**
@@ -21,7 +21,7 @@ import {ErrorPredicate} from "./error-predicate";
  */
 export function find(
 	err: Error,
-	predicate: ErrorPredicate|ErrorConstructor,
+	predicate: ErrorPredicate|Function,
 ): Error|null {
 	return findByPredicate(err, normalizePredicate(predicate));
 }
@@ -40,7 +40,7 @@ export function find(
  */
 export function filter(
 	err: Error,
-	predicate: ErrorPredicate|ErrorConstructor,
+	predicate: ErrorPredicate|Function,
 ): Error[] {
 	return filterByPredicate(err, normalizePredicate(predicate));
 }

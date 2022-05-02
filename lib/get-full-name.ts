@@ -1,5 +1,3 @@
-import {ErrorConstructor} from "./error-constructor";
-
 /**
  * Returns the full name of an Error instance or constructor.
  *
@@ -15,7 +13,7 @@ import {ErrorConstructor} from "./error-constructor";
  *   function will return null.
  * @returns Full name if it can be determined, null otherwise.
  */
-export function getFullName(err?: Error|ErrorConstructor|null): string|null {
+export function getFullName(err?: Error|Function|null): string|null {
 	if (!err) return null;
 	if ((err as any).fullName) return (err as any).fullName;
 	if (err.name === "Error") return err.name;
