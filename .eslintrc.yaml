@@ -1,1 +1,3 @@
 extends: '@batterii/eslint-config-vurvey'
+rules:
+  "@typescript-eslint/ban-types": off
